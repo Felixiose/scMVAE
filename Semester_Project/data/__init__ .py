@@ -19,8 +19,9 @@ from scRNADataset import scRNADataset
 from .vae_dataset import VaeDataset
 
 __all__ = [
-    "scRNADataset"
-    "VaeDataset"
+    "scRNADataset",
+    "VaeDataset",
+    "create_dataset",
 ]
 
 
