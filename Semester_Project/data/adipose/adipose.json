@@ -1,0 +1,8 @@
+{
+ "data_file": "./data/adipose/adipose.mtx",
+ "label_file": "./data/adipose/adipose_celltype.tsv",
+ "batch_files": [],
+ "url":"https://murena.io/s/TsoA7ANZgX8rTiz/download"
+}
+
+ 

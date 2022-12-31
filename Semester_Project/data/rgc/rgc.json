@@ -1,0 +1,9 @@
+{
+ "data_file": "./data/rgc/gene_sorted-rgc.mtx",
+ "label_file": "./data/rgc/rgc_celltype.tsv",
+ "batch_files": [
+ 	"./data/rgc/rgc_batch.tsv"],
+ "url":"https://murena.io/s/K3dxcRLwRtogckz/download"
+}
+
+
