@@ -2,7 +2,8 @@ from typing import Any
 import torch
 from torch import Tensor
 import geoopt.manifolds.poincare.math as pm
-from mvae.ops.common import sqrt, atanh
+from scMVAE.ops.common import sqrt, atanh
+
 
 
 def _c(radius: Tensor) -> Tensor:

@@ -1,5 +1,5 @@
 import torch
-from config import *
+from config import * #TODO FIX it and use it how you want it in the exaple file
 from scMVAE.models import FeedForwardVAE
 from mvae import utils
 from data.scRNADataset import scRNADataset

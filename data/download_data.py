@@ -3,8 +3,7 @@ from zipfile import ZipFile
 import os
 
 
-if __name__ == "__main__":
-    download_path = "./data"
+download_path = "./data"
 
 
 def download(url, download_path):
