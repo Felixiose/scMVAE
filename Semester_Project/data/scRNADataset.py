@@ -23,7 +23,7 @@ import torch
 from torch import Tensor
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, SubsetRandomSampler
-from data.vae_dataset import VaeDataset
+from Semester_Project.data.vae_dataset import VaeDataset
 from torch.distributions import Normal, NegativeBinomial
 
 

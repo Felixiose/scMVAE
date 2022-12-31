@@ -3,8 +3,8 @@ from zipfile import ZipFile
 import os
 
 
-download_path = "./data"
-url = "https://murena.io/s/XegtijPDxW2oPsW"
+download_path = "./Semester_Project/data"
+url = "https://murena.io/s/gZTkaw5HLrSoW9D/download/data.zip"
 
 
 def download(url, download_path):
@@ -24,8 +24,10 @@ def check_download_data(url, extract_dir, remove=True):
     print(url)
     download(url, extract_dir+".zip")
     print("Extracting data into" + extract_dir)
-    extract_zip(extract_dir+".zip", os.path.dirname(extract_dir))
+    extract_zip(extract_dir+".zip", extract_dir)
     print(flush=True)
     if remove:
         os.remove(extract_dir+".zip")
          
+
+check_download_data(url, download_path)

@@ -23,8 +23,8 @@ def main() -> None:
     parser.add_argument("--universal", type=str2bool, default=False, help="Universal training scheme.")
     parser.add_argument("--dataset",
                         type=str,
-                        default="mnist",
-                        help="Which dataset to run on. Options: 'mnist', 'bdp', 'cifar', 'omniglot'.")
+                        default="adipose", 
+                        help="Which dataset to run on. Options: adipose, rgc, celegans")
     parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
     parser.add_argument(
@@ -81,7 +81,7 @@ def main() -> None:
     else:
         torch.set_default_dtype(torch.float32)
 
-    dataset = create_dataset(args.dataset, args.batch_size, args.data) #TODO Andrei look if this fits your dataclass
+    dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = doubles) #TODO Andrei look if this fits your dataclass
     print("#####")
     cur_time = datetime.datetime.utcnow().isoformat()
     components = utils.parse_components(args.model, args.fixed_curvature)

@@ -1,23 +1,39 @@
-from .scRNADataset import scRNADataset
-from vae_dataset import VaeDataset
+import typing
+import os
+from Semester_Project.data.scRNADataset import scRNADataset
+from Semester_Project.data.vae_dataset import VaeDataset
 
 
 
+#create_dataset(dataset_type="calegans",batch_size=100,)
 
 
-def create_dataset(dataset_name: str, *args: Any, **kwargs: Any) -> VaeDataset:
-    data_scheme_json = ".data/" + dataset_name + "/"+ dataset_name +".json"
-    if os.path.exist(data_scheme_json):
-        data_scheme = json.load(open(data_scheme_json, "r"))
-        return scRNADataset(batch_size = BATCH_SIZE,
-                   data_folder = os.path.dirname(data_scheme['data_file']), 
-                   data_file = data_scheme['data_file'], 
-                   label_file = data_scheme['label_file'],
-                   batch_files = data_scheme['batch_files'],
-                   doubles = DOUBLES)
+
+def create_dataset(dataset_type: str, *args, **kwargs) -> VaeDataset:
+    if dataset_type == "adipose":
+        return scRNADataset(
+                   data_folder = None, 
+                   data_file = "./Semester_Project/data/adipose/adipose.mtx", 
+                   label_file = "./Semester_Project/data/adipose/adipose_celltype.tsv",
+                   batch_files = [],
+                   **kwargs
+                   )
+    elif dataset_type == "rgc":
+        return scRNADataset(
+                   data_folder = None, 
+                   data_file = "./Semester_Project/data/rgc/gene_sorted-rgc.mtx", 
+                   label_file = "./Semester_Project/data/rgc/rgc_celltype.tsv",
+                   batch_files = [ "./Semester_Project/data/rgc/rgc_batch.tsv" ],
+                   **kwargs
+                   )
+    elif dataset_type == "celegans":
+        return scRNADataset(
+                   data_folder = None, 
+                   data_file = "./Semester_Project/data/celegans/celegan.mtx", 
+                   label_file = "./Semester_Project/data/celegans/celegan_embryo_time.tsv",
+                   batch_files =[ "./Semester_Project/data/celegans/celegan_batch.tsv",
+                   "./Semester_Project/data/celegans/celegan_embryo_time.tsv"],
+                   **kwargs
+                   )
     else:
-        raise ValueError(f"Unknown dataset name: '{dataset_name}'.\nMake sure data is in data directory and data scheme json file exists")
-   
-    
-   
-       
+        raise ValueError(f"Unknown dataset name: '{dataset_type}'")
