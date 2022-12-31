@@ -157,7 +157,7 @@ class scRNADataset(VaeDataset):
         return res
 
     def get_max_data(self):
-        data = self.read_mtx(self.data_file).transpose().todense()
+        data = self.read_mtx(self.data_file)
         return data.max()
 
     def create_dummy_batch_eff(self, n: int):
