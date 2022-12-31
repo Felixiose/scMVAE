@@ -67,7 +67,7 @@ def main() -> None:
     model.load_state_dict(torch.load(args.chkpt, map_location=args.device))
 
     print("Loaded model", model_name, "at epoch", args.epoch, "from", args.chkpt)
-    _, test_loader = dataset.create_loaders(arg.batch_size=batch_size)
+    _, test_loader = dataset.create_loaders(batch_size=args.batch_size)
 
     print(f"\tEpoch {args.epoch}:\t", end="")
     model.eval()
