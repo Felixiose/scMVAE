@@ -4,6 +4,7 @@ import os
 
 
 download_path = "./data"
+url = "https://murena.io/s/XegtijPDxW2oPsW"
 
 
 def download(url, download_path):
@@ -18,16 +19,13 @@ def extract_zip(file, extract_dir):
         z.extractall(path = extract_dir)  
 
 
-def check_download_data(url, file_path, extract_dir, remove=True):
-    if not os.path.exists(file_path):
-        
-        print("Downloading data files from cloud..\n")
-        print(url)
-        download(url, extract_dir+".zip")
-        
-        print("Extracting data into" + extract_dir)
-        extract_zip(extract_dir+".zip", os.path.dirname(extract_dir))
-        print(flush=True) 
-        if remove:
-            os.remove(extract_dir+".zip")
+def check_download_data(url, extract_dir, remove=True):
+    print("Downloading data files from cloud..\n")
+    print(url)
+    download(url, extract_dir+".zip")
+    print("Extracting data into" + extract_dir)
+    extract_zip(extract_dir+".zip", os.path.dirname(extract_dir))
+    print(flush=True)
+    if remove:
+        os.remove(extract_dir+".zip")
          
