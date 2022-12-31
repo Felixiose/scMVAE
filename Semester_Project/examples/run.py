@@ -4,9 +4,9 @@ import os
 
 import torch
 
-from ..data import create_dataset
+from ..data.utils import create_dataset
 from ..scMVAE import utils
-from ..scMVAE.models import Trainer, FeedForwardVAE, ConvolutionalVAE
+from ..scMVAE.models import Trainer, FeedForwardVAE 
 from ..utils import str2bool
 
 

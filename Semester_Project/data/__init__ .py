@@ -17,6 +17,7 @@ from typing import Any
 
 from scRNADataset import scRNADataset
 from .vae_dataset import VaeDataset
+from utils import create_dataset
 
 __all__ = [
     "scRNADataset",
@@ -24,9 +25,3 @@ __all__ = [
     "create_dataset",
 ]
 
-
-def create_dataset(dataset_type: str, *args: Any, **kwargs: Any) -> VaeDataset:
-    if dataset_type == "bdp": #TODO ANDREI FIX THE NAMES
-        return scRNADataset(*args, **kwargs)
-    else:
-        raise ValueError(f"Unknown dataset type: '{dataset_type}'.")

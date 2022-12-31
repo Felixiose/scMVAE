@@ -3,7 +3,7 @@ import datetime
 
 import torch
 
-from ..data import create_dataset
+from ..data.utils import create_dataset
 from ..scMVAE import utils
 from ..scMVAE.models import FeedForwardVAE
 from ..scMVAE.stats import EpochStats
