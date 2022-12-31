@@ -81,7 +81,7 @@ def main() -> None:
     else:
         torch.set_default_dtype(torch.float32)
 
-    dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = doubles) #TODO Andrei look if this fits your dataclass
+    dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = args.doubles) #TODO Andrei look if this fits your dataclass
     print("#####")
     cur_time = datetime.datetime.utcnow().isoformat()
     components = utils.parse_components(args.model, args.fixed_curvature)
@@ -107,7 +107,7 @@ def main() -> None:
                       export_embeddings=args.export_embeddings,
                       test_every=args.test_every)
     optimizer = trainer.build_optimizer(learning_rate=args.learning_rate, fixed_curvature=args.fixed_curvature)
-    train_loader, test_loader = dataset.create_loaders()
+    train_loader, test_loader = dataset.create_loaders(args.batch_size)
     betas = utils.linear_betas(args.beta_start, args.beta_end, end_epoch=args.beta_end_epoch, epochs=args.epochs)
 
     if args.universal:

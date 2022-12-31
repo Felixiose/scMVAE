@@ -22,7 +22,7 @@ import bokeh.resources
 import matplotlib.pyplot as plt
 import torch
 
-from scMVAE.utils import parse_component_str
+from ..scMVAE.utils import parse_component_str
 
 BASE_HEIGHT = 800
 HEIGHT = 1500
