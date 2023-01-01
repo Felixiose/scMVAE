@@ -31,6 +31,7 @@ class FeedForwardVAE(ModelVAE):
         self.fc_logits = nn.Linear(h_dim, dataset.in_dim) 
         # Batch layer for normailzation
         self.batch_norm = nn.BatchNorm1d(self.h_dim)
+        self.batch_norm_decoder = nn.BatchNorm1d(self.h_dim)
 
 
         
@@ -59,7 +60,7 @@ class FeedForwardVAE(ModelVAE):
             i = 2
         concat_z = torch.cat((concat_z,self.batch_saver),dim=i)
         #forward pass
-        x = torch.relu(self.fc_d0(concat_z))
+        x = self.batch_norm_decoder(torch.relu(self.fc_d0(concat_z)))
         x = self.fc_logits(x)
         x = x.view(-1, bs, self.in_dim)  # flatten
         return x.squeeze(dim=0)  # in case we're not doing LL estimation

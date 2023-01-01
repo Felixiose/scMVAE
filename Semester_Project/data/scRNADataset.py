@@ -146,8 +146,8 @@ class scRNADataset(VaeDataset):
         """
         data = self.read_mtx(self.data_file)                # OPTION 1: No normalization (don't comment this line, needed for option 2 and 3)
         # normalise data
-        data = np.true_divide(data, data.max())             # OPTION 2: Min-Max
-        # data = np.log(data + 1)                           # OPTION 3: log(x + 1)
+        # data = np.true_divide(data, data.max())             # OPTION 2-4: Min-Max
+        # data = np.log(data + 1)                           # OPTION 3-5: log(x + 1)
         data = pd.DataFrame(data)
         # add constant dummy batch effect if no batch effect given
         if self.batch_data_pd is None:
@@ -209,15 +209,13 @@ class scRNADataset(VaeDataset):
 
         # OPTION 1 : No normalization
 
-        # x_mb_nonnegative = torch.add(torch.nn.functional.relu(x_mb_), 0.00001)
+        x_mb_nonnegative = torch.add(torch.nn.functional.relu(x_mb_), 0.00001)
 
-        # log_prob = -NegativeBinomial(x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(x_mb)
+        log_prob = -NegativeBinomial(x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(x_mb)
 
-        # scale_penalty = 1
-        # error = torch.sub(x_mb_,x_mb)
-        # penatly_term = scale_penalty * (error * error)
-
-        # return torch.add(log_prob,penatly_term) 
+        scale_penalty = 1
+        error = torch.sub(x_mb_,x_mb)
+        penatly_term = torch.sqrt(scale_penalty * (error * error))
 
 
         # OPTION 2 : Min-Max normalization
@@ -244,9 +242,9 @@ class scRNADataset(VaeDataset):
 
         # log_prob = -NegativeBinomial(rescaled_x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(rescaled_x_mb)
 
-        # scale_penalty = 1
+        # scale_penalty = 0
         # error = torch.sub(rescaled_x_mb_,rescaled_x_mb)
-        # penatly_term = scale_penalty * (error * error)
+        # penatly_term = (scale_penalty * (error * error))
 
         # return torch.add(log_prob,penatly_term) 
 
@@ -261,7 +259,7 @@ class scRNADataset(VaeDataset):
         error = torch.sub(x_mb_,x_mb)
         penatly_term = scale_penalty * (error * error)
 
-        return torch.add(log_prob,penatly_term) 
+        # return torch.add(log_prob,penatly_term) 
 
 
         # EVALUATION:
@@ -272,13 +270,16 @@ class scRNADataset(VaeDataset):
         # print(rescaled_x_mb_.data[0,:10])
         # print(rescaled_x_mb.data[0,:10])
 
-        # 2 - Does it work with Not Fixed Curvature (and Double = False)?
+        # # 2 - Does it work with Not Fixed Curvature (and Double = False)?
 
-        # 3 - What is the proportion of penalty_term over total_loss?
+        # # 3 - What is the proportion of penalty_term over total_loss?
         # print(penatly_term.sum() * 100 / (penatly_term.sum() + log_prob.sum()))
+
+        # 4 - What perfomrs best for clustering
 
 
         # EARLY FINDINGS:
 
         # ==> cannot make not-fixed-curvature work anymore :/ (I tried most options..)
 
+        return torch.add(log_prob,penatly_term) 

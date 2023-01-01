@@ -83,7 +83,7 @@ def main() -> None:
 
     dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = args.doubles) #TODO Andrei look if this fits your dataclass
     print("#####")
-    cur_time = datetime.datetime.utcnow().isoformat()
+    cur_time = datetime.datetime.utcnow().isoformat().replace(':','_')
     components = utils.parse_components(args.model, args.fixed_curvature)
     model_name = utils.canonical_name(components)
     print(f"VAE Model: {model_name}; Epochs: {args.epochs}; Time: {cur_time}; Fixed curvature: {args.fixed_curvature}; "
