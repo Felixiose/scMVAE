@@ -56,7 +56,7 @@ def main() -> None:
     print(f"Eval VAE Model: {model_name}; Time: {cur_time}; Dataset: {args.dataset}")
     print("#####", flush=True)
 
-    if args.dataset in ["adipose", "rgc", "celegans"]:      #TODO -> ANDREI TELL THE NAME OF THE DATASET
+    if args.dataset in ["adipose", "rgc", "celegans", "adipose_gaussian"]:      #TODO -> ANDREI TELL THE NAME OF THE DATASET
         model_cls = FeedForwardVAE  # type: ignore
     else:
         raise ValueError(f"Unknown dataset '{args.dataset}'.")

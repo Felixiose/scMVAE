@@ -18,6 +18,14 @@ def create_dataset(dataset_type: str, *args, **kwargs) -> VaeDataset:
                    batch_files = [],
                    **kwargs
                    )
+    elif dataset_type == "adipose_gaussian":
+        return scRNADataset(
+                   data_folder = None, 
+                   data_file = "./Semester_Project/data/adipose_gaussian/adipose.mtx", 
+                   label_file = "./Semester_Project/data/adipose_gaussian/adipose_celltype.tsv",
+                   batch_files = [],
+                   **kwargs
+                   )
     elif dataset_type == "rgc":
         return scRNADataset(
                    data_folder = None, 

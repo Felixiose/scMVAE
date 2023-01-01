@@ -4,7 +4,8 @@ import os
 
 
 download_path = "./Semester_Project/data"
-url = "https://murena.io/s/gZTkaw5HLrSoW9D/download/data.zip"
+#url = "https://murena.io/s/gZTkaw5HLrSoW9D/download/data.zip"
+url = "https://murena.io/s/AcwcKHebTJZPEMD/download/data2.zip"
 
 
 def download(url, download_path):
