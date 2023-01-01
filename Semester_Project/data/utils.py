@@ -1,5 +1,3 @@
-import typing
-import os
 from Semester_Project.data.scRNADataset import scRNADataset
 from Semester_Project.data.vae_dataset import VaeDataset
 

@@ -7,3 +7,5 @@ events.*
 */*/__pycache__/
 */__pycache__/
 !.gitignore
+*.tsv
+*.mtx

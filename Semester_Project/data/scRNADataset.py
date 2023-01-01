@@ -13,19 +13,14 @@
 # limitations under the License.
 # ==============================================================================
 
-from typing import Dict, Tuple, Optional, Any
-import json
-import os
+from typing import Tuple, Optional
 import pandas as pd
 import numpy as np
 from scipy.io import mmread
 import torch
-from torch import Tensor
-import torch.nn.functional as F
 from torch.utils.data import DataLoader, SubsetRandomSampler
 from Semester_Project.data.vae_dataset import VaeDataset
-from torch.distributions import Normal, NegativeBinomial
-
+from torch.distributions import NegativeBinomial
 
 
 class scRNADataset(VaeDataset):
@@ -144,10 +139,7 @@ class scRNADataset(VaeDataset):
         """
         Read gene expression data (features), normalize by max value, append batch effect features
         """
-        data = self.read_mtx(self.data_file)                # OPTION 1: No normalization (don't comment this line, needed for option 2 and 3)
-        # normalise data
-        # data = np.true_divide(data, data.max())             # OPTION 2-4: Min-Max
-        # data = np.log(data + 1)                           # OPTION 3-5: log(x + 1)
+        data = self.read_mtx(self.data_file)                # OPTION 1: No normalization
         data = pd.DataFrame(data)
         # add constant dummy batch effect if no batch effect given
         if self.batch_data_pd is None:
@@ -190,23 +182,21 @@ class scRNADataset(VaeDataset):
         train_loader = DataLoader(
             dataset=self.dataset,
             batch_size=batch_size,
-            # num_workers=8,
-            # pin_memory=True,
+            num_workers=8,
+            pin_memory=True,
             sampler=self.train_sampler,
         )
         test_loader = DataLoader(
             dataset=self.dataset,
             batch_size=batch_size,
-            # num_workers=8,
-            # pin_memory=True,
+            num_workers=8,
+            pin_memory=True,
             sampler=self.test_sampler,
         )
         return train_loader, test_loader
         
     def reconstruction_loss(self, x_mb_: torch.Tensor, x_mb: torch.Tensor) -> torch.Tensor:
         
-        # NOTICE: in order to choose option, also change normalization in the data definition above.
-
         # OPTION 1 : No normalization
 
         x_mb_nonnegative = torch.add(torch.nn.functional.relu(x_mb_), 0.00001)
@@ -216,70 +206,5 @@ class scRNADataset(VaeDataset):
         scale_penalty = 1
         error = torch.sub(x_mb_,x_mb)
         penatly_term = torch.sqrt(scale_penalty * (error * error))
-
-
-        # OPTION 2 : Min-Max normalization
-        
-        # max_data = self._max_data
-        # rescaled_x_mb_ = max_data * x_mb_
-        # rescaled_x_mb = max_data * x_mb
-        # rescaled_x_mb_nonnegative = torch.add(torch.nn.functional.relu(rescaled_x_mb_), 0.00001)
-
-        # log_prob = -NegativeBinomial(rescaled_x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(rescaled_x_mb)
-
-        # scale_penalty = 1
-        # error = torch.sub(rescaled_x_mb_,rescaled_x_mb)
-        # penatly_term = scale_penalty * (error * error)
-
-        # return torch.add(log_prob,penatly_term) 
-
-
-        # OPTION 3 : log(x+1) normalization
-
-        # rescaled_x_mb_ = torch.exp(x_mb_) - 1
-        # rescaled_x_mb = torch.exp(x_mb) - 1
-        # rescaled_x_mb_nonnegative = torch.add(torch.nn.functional.relu(rescaled_x_mb_), 0.00001)
-
-        # log_prob = -NegativeBinomial(rescaled_x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(rescaled_x_mb)
-
-        # scale_penalty = 0
-        # error = torch.sub(rescaled_x_mb_,rescaled_x_mb)
-        # penatly_term = (scale_penalty * (error * error))
-
-        # return torch.add(log_prob,penatly_term) 
-
-
-        # OPTION 4, 5 : Min-Max, log(x+1) normalization, but no rescaling in the loss
-
-        x_mb_nonnegative = torch.add(torch.nn.functional.relu(x_mb_), 0.00001)
-
-        log_prob = -NegativeBinomial(x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(x_mb)
-
-        scale_penalty = 1
-        error = torch.sub(x_mb_,x_mb)
-        penatly_term = scale_penalty * (error * error)
-
-        # return torch.add(log_prob,penatly_term) 
-
-
-        # EVALUATION:
-
-        # 1 - Does the ELBO increase well? And does the model really predict the right counts?
-        # print(x_mb_.data[0,:10])
-        # print(x_mb.data[0,:10])
-        # print(rescaled_x_mb_.data[0,:10])
-        # print(rescaled_x_mb.data[0,:10])
-
-        # # 2 - Does it work with Not Fixed Curvature (and Double = False)?
-
-        # # 3 - What is the proportion of penalty_term over total_loss?
-        # print(penatly_term.sum() * 100 / (penatly_term.sum() + log_prob.sum()))
-
-        # 4 - What perfomrs best for clustering
-
-
-        # EARLY FINDINGS:
-
-        # ==> cannot make not-fixed-curvature work anymore :/ (I tried most options..)
 
         return torch.add(log_prob,penatly_term) 

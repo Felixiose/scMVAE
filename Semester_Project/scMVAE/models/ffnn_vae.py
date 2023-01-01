@@ -8,13 +8,11 @@ from .vae import ModelVAE
 from ...data.vae_dataset import VaeDataset
 from ..components import Component
 
-
 class FeedForwardVAE(ModelVAE):
 
     def __init__(self, h_dim: int, components: List[Component], dataset: VaeDataset,
                  scalar_parametrization: bool) -> None:
         super().__init__(h_dim, components, dataset, scalar_parametrization)
-        
 
         #data dimensions
         self.in_dim = dataset.in_dim
@@ -33,10 +31,6 @@ class FeedForwardVAE(ModelVAE):
         self.batch_norm = nn.BatchNorm1d(self.h_dim)
         self.batch_norm_decoder = nn.BatchNorm1d(self.h_dim)
 
-
-        
-
-
     def encode(self, x: Tensor) -> Tensor:
         assert len(x.shape) == 2
         bs, dim = x.shape
@@ -48,8 +42,6 @@ class FeedForwardVAE(ModelVAE):
         x = torch.relu(self.batch_norm(self.fc_e0(x)))
         return x.view(bs, -1)
 
-
-
     def decode(self, concat_z: Tensor) -> Tensor:
         assert len(concat_z.shape) >= 2  
         bs = concat_z.size(-2)
@@ -60,7 +52,7 @@ class FeedForwardVAE(ModelVAE):
             i = 2
         concat_z = torch.cat((concat_z,self.batch_saver),dim=i)
         #forward pass
-        x = self.batch_norm_decoder(torch.relu(self.fc_d0(concat_z)))
+        x = torch.relu(self.batch_norm_decoder(self.fc_d0(concat_z)))
         x = self.fc_logits(x)
         x = x.view(-1, bs, self.in_dim)  # flatten
         return x.squeeze(dim=0)  # in case we're not doing LL estimation

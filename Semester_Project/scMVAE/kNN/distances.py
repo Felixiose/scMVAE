@@ -2,9 +2,8 @@ from typing import Any
 import torch
 from torch import Tensor
 import geoopt.manifolds.poincare.math as pm
-from scMVAE.ops.common import sqrt, atanh
-
-
+from ...scMVAE.ops.common import sqrt, atanh
+from ...scMVAE.ops.hyperbolics import acosh, lorentz_product
 
 def _c(radius: Tensor) -> Tensor:
     return 1 / radius**2
@@ -57,7 +56,7 @@ def spherical_distance(x: torch.Tensor, y: torch.Tensor, radius: torch.Tensor, *
     return radius * acos
 
 def lorentz_distance(x: torch.Tensor, y: torch.Tensor, radius: torch.Tensor, **kwargs: Any) -> torch.Tensor:
-    return radius * torch.acosh(-lorentz_product(x, y, **kwargs) / (radius**2))
+    return radius * acosh(-lorentz_product(x, y, **kwargs) / (radius**2))
 
 def lorentz_product(x: Tensor, y: Tensor, keepdim: bool = False, dim: int = -1) -> Tensor:
     m = x * y
@@ -66,5 +65,3 @@ def lorentz_product(x: Tensor, y: Tensor, keepdim: bool = False, dim: int = -1) 
     else:
         ret = torch.sum(m, dim=dim, keepdim=False) - 2 * m[..., 0]
     return ret
-
-

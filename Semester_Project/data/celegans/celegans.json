@@ -1,9 +1,8 @@
 {
- "data_file": "./data/celegans/celegan.mtx",
- "label_file": "./data/celegans/celegan_celltype.tsv",
+ "data_file": "./Semester_Project/data/celegans/celegan.mtx",
+ "label_file": "./Semester_Project/data/celegans/celegan_celltype.tsv",
  "batch_files": [
- 	"./data/celegans/celegan_batch.tsv",
- 	"./data/celegans/celegan_embryo_time.tsv"
+ 	"./Semester_Project/data/celegans/celegan_batch.tsv",
+ 	"./Semester_Project/data/celegans/celegan_embryo_time.tsv"
  	],
- "url":"https://murena.io/s/ADXQ8FkN9dKWsKD/download"
 }
