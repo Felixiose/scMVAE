@@ -61,6 +61,7 @@ To run training and inference, activate the created conda environment and run th
 conda activate pt
 
 python -m mt.examples.run
+```
 
 Take a look at `Semester_Project/examples/run.py` for a list of command line arguments.
 
