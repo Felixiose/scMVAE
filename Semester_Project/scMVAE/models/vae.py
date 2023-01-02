@@ -22,7 +22,7 @@ from torch import Tensor
 from torch.distributions import Distribution
 
 from ...data.vae_dataset import VaeDataset
-from ..stats import BatchStats, BatchStatsFloat
+from ..util.stats import BatchStats, BatchStatsFloat
 from ..components import Component
 
 

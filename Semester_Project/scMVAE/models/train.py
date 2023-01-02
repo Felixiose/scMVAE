@@ -26,7 +26,7 @@ from .vae import ModelVAE
 from ..components import StereographicallyProjectedSphereComponent, PoincareComponent
 from ..components import SphericalComponent, HyperbolicComponent
 from ..ops import hyperbolics as H
-from ..stats import Stats, EpochStats
+from ..util.stats import Stats, EpochStats
 from ...visualization.utils import plot_poincare_embeddings
 from ..utils import CurvatureOptimizer
 
