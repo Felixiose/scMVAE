@@ -75,7 +75,7 @@ For an evaluation run, see `Semester_Project/examples/eval.py`.
 
 # Contact us
 
-[Colin Doumont](...)
-[Christophe Muller]()
-[Andrei Papkou]()
+[Colin Doumont](...)\
+[Christophe Muller]()\
+[Andrei Papkou]()\
 [Félix Vittori](fvittori@student.ethz.ch)
