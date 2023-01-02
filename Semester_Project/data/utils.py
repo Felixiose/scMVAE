@@ -36,10 +36,21 @@ def create_dataset(dataset_type: str, *args, **kwargs) -> VaeDataset:
         return scRNADataset(
                    data_folder = None, 
                    data_file = "./Semester_Project/data/celegans/celegan.mtx", 
-                   label_file = "./Semester_Project/data/celegans/celegan_embryo_time.tsv",
-                   batch_files =[ "./Semester_Project/data/celegans/celegan_batch.tsv",
-                   "./Semester_Project/data/celegans/celegan_embryo_time.tsv"],
+                   label_file = "./Semester_Project/data/celegans/celegan_celltype.tsv",
+                   batch_files =[ "./Semester_Project/data/celegans/celegan_batch.tsv"
+                  ],
                    **kwargs
                    )
+     elif dataset_type == "uc_epi":
+        return scRNADataset(
+                   data_folder = None, 
+                   data_file = "./Semester_Project/data/uc_epi/uc_epi.mtx", 
+                   label_file = "./Semester_Project/data/uc_epi/uc_epi_celltype.tsv",
+                   batch_files =[ "./Semester_Project/data/uc_epi/uc_epi_batch_patient.tsv",
+                                 "./Semester_Project/data/uc_epi/uc_epi_batch_location.tsv",
+                                 "./Semester_Project/data/uc_epi/uc_epi_batch_health.tsv",
+                  ],
+                   **kwargs
+                   )   
     else:
         raise ValueError(f"Unknown dataset name: '{dataset_type}'")
