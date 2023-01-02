@@ -1,4 +1,4 @@
-# Mixed-Curvature-VAE-for-scRNA-seq
+# Mixed Curvature VAE for single-cell RNA sequencing data
 
 
 by
