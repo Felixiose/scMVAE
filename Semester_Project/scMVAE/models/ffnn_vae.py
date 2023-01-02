@@ -13,7 +13,7 @@ class FeedForwardVAE(ModelVAE):
     def __init__(self, h_dim: int, components: List[Component], dataset: VaeDataset,
                  scalar_parametrization: bool) -> None:
         super().__init__(h_dim, components, dataset, scalar_parametrization)
-
+     
         #data dimensions
         self.in_dim = dataset.in_dim
         self.h_dim = h_dim
@@ -32,6 +32,14 @@ class FeedForwardVAE(ModelVAE):
         self.batch_norm_decoder = nn.BatchNorm1d(self.h_dim)
 
     def encode(self, x: Tensor) -> Tensor:
+        """Encodes the Tensor `x` and saves the batch data in self.batch_saver.
+
+        Args:
+            x (Tensor): Tensor to encode.
+
+        Returns:
+            Tensor: Encoded tensor.
+        """
         assert len(x.shape) == 2
         bs, dim = x.shape
         assert dim == self.in_dim
@@ -43,6 +51,14 @@ class FeedForwardVAE(ModelVAE):
         return x.view(bs, -1)
 
     def decode(self, concat_z: Tensor) -> Tensor:
+        """Decodes the latent Tensor z and reconstructs the Tensor x, while taking into account the batch effect.
+        Args:
+            concat_z (Tensor): latent vector z.
+
+        Returns:
+            Tensor: Reconstructed tensor.
+        """
+
         assert len(concat_z.shape) >= 2  
         bs = concat_z.size(-2)
         #concat the batch effect to latent space     

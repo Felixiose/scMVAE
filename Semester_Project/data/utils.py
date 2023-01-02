@@ -2,12 +2,19 @@ from Semester_Project.data.scRNADataset import scRNADataset
 from Semester_Project.data.vae_dataset import VaeDataset
 
 
-
-#create_dataset(dataset_type="calegans",batch_size=100,)
-
-
-
 def create_dataset(dataset_type: str, *args, **kwargs) -> VaeDataset:
+    """Create a VaeDataset object of the specified type.
+
+    Args:
+        dataset_type (str): name of the dataset to use
+
+    Raises:
+        ValueError: if non-existent dataset type is specified
+
+    Returns:
+        VaeDataset: object of the specified dataset type
+    """
+
     if dataset_type == "adipose":
         return scRNADataset(
                    data_folder = None, 
