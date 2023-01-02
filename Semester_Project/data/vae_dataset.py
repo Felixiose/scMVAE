@@ -19,8 +19,11 @@ import torch
 from torch.utils.data import DataLoader
 
 
-class VaeDataset:
 
+
+
+class VaeDataset:
+    
     def __init__(self, batch_size: int, in_dim: int, img_dims: Optional[Tuple[int, ...]]) -> None:
         self.batch_size = batch_size
         self._in_dim = in_dim

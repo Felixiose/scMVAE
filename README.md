@@ -30,16 +30,24 @@ Our structure is closely related to the one used in the
 mvae-github-repository as it is the one we built our project upon. 
 Check mvae out: https://github.com/oskopek/mvae
 
-* `chkpt/` - Checkpoints for trained models.
-* `data/` - Data folder. Contains a script necessary for downloading the datasets, and the downloaded data.
-* `mt/` - Source folder (stands for Master Thesis).
+
+
+
+* `Semster_Project/` - Source folder 
   * `data/` - Data loading, preprocessing, batching, and pre-trained embeddings.
-  * `examples/` - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation.
-  * `mvae/` - Model directory. Note that models heavily use inheritance!
-  * `test_data/` - Data used for testing.
+  * `examples/` - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. _changed to our needs from mvae_
+  * `scMVAE/` - Model directory. Note that models heavily use inheritance!
+    * `components/`- from mvae, contains the components for training
+    * `distributions/` - from mvae, contains different spaces
+    *  `kNN/` - contains the code for clustering 
+    * `model/` - contains the ffnn_vae model (our contribution) and the vae.py object from which we inherit the model. In addition we have a training class, also from mvae
+    * `ops/` - operations definitions from mvae
+    * `sampling/`- sampling methods from mvae
+    * `utils/` - different data handling utils
   * `visualization/` - Utilities for visualization of latent spaces or training statistics.
-* `plots/` - Folder to store generated plots.
-* `scripts/` - Contains scripts to run experiments and plot the results.
+  * `utils.py/` - Containt parsing utility function
+* `data/` - Data folder. Contains a script necessary for downloading the datasets we used. 
+* `scripts/` - Contains scripts to run experiments and plot the results. _From MVAE_
 * `Makefile` - Defines "aliases" for various tasks.
 * `README.md` - This manual.
 * `LICENSE` - Apache Standard License 2.0.
