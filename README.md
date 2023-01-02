@@ -18,11 +18,11 @@ Félix Vittori
 
 Make sure you have Python 3.7 installed. If you do not want to install all dependencies
 manually, make sure to have conda, and run the following commands:
-'''bash
+```bash
 make conda
 conda activate pt
 make download_data
-'''
+```
 
 ## Structure 
 
