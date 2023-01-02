@@ -21,7 +21,7 @@ def main() -> None:
     parser.add_argument("--dataset",
                         type=str,
                         default="adipose", 
-                        help="Which dataset to run on. Options: adipose, rgc, celegans")
+                        help="Which dataset to run on. Options: adipose, rgc, celegans, uc_epi")
     parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
     parser.add_argument(
         "--scalar_parametrization",
@@ -56,7 +56,7 @@ def main() -> None:
     print(f"Eval VAE Model: {model_name}; Time: {cur_time}; Dataset: {args.dataset}")
     print("#####", flush=True)
 
-    if args.dataset in ["adipose", "rgc", "celegans", "adipose_gaussian"]:      #TODO -> ANDREI TELL THE NAME OF THE DATASET
+    if args.dataset in ["adipose", "rgc", "celegans", "uc_epi"]:    
         model_cls = FeedForwardVAE  # type: ignore
     else:
         raise ValueError(f"Unknown dataset '{args.dataset}'.")
