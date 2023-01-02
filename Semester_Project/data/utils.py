@@ -41,7 +41,7 @@ def create_dataset(dataset_type: str, *args, **kwargs) -> VaeDataset:
                   ],
                    **kwargs
                    )
-     elif dataset_type == "uc_epi":
+    elif dataset_type == "uc_epi":
         return scRNADataset(
                    data_folder = None, 
                    data_file = "./Semester_Project/data/uc_epi/uc_epi.mtx", 
