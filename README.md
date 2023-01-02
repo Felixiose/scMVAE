@@ -2,9 +2,10 @@
 
 
 by
-Colin Diumont
-Christophe Muller
-Andrei Papkou
+Colin Diumont,
+Christophe Muller,
+Andrei Papkou,
+and
 Félix Vittori
 
 
@@ -23,7 +24,7 @@ conda activate pt
 make download_data
 '''
 
-"" Structure 
+## Structure 
 
 Our structure is closely related to the one used in the
 mvae-github-repository as it is the one we built our project upon. 
