@@ -2,7 +2,7 @@
  "data_file": "./Semester_Project/data/rgc/gene_sorted-rgc.mtx",
  "label_file": "./Semester_Project/data/rgc/rgc_celltype.tsv",
  "batch_files": [
- 	"./data/rgc/rgc_batch.tsv"],
+ 	"./data/rgc/rgc_batch.tsv"]
 }
 
 
