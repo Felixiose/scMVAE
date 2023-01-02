@@ -2,7 +2,7 @@
 
 
 by
-Colin Diumont,
+Colin Doumont,
 Christophe Muller,
 Andrei Papkou,
 and
