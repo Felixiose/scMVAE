@@ -10,7 +10,7 @@ Félix Vittori
 
 
 > This repository contains the implementation of our Semester Project for the class Deep Learning 263-3210-00L at ETH Zurich.
-> For further information about this project visit https://github.com/
+> For further information about this project visit https://github.com/.
 > To run this project follow the steps layed out below
 
 
@@ -75,7 +75,7 @@ For an evaluation run, see `Semester_Project/examples/eval.py`.
 
 # Contact us
 
-[Colin Doumont](...)\
-[Christophe Muller]()\
-[Andrei Papkou]()\
+[Colin Doumont](cdoumont@student.ethz.ch)\
+[Christophe Muller](mullec@student.ethz.ch)\
+[Andrei Papkou](andrei.papkou@uzh.ch)\
 [Félix Vittori](fvittori@student.ethz.ch)
