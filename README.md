@@ -50,7 +50,6 @@ Our structure is closely related to the one used in the
 * `scripts/` - Contains scripts to run experiments and plot the results. _From MVAE_
 * `Makefile` - Defines "aliases" for various tasks.
 * `README.md` - This manual.
-* `LICENSE` - Apache Standard License 2.0.
 * `environment.yml` - Required Python packages.
 
 ## Usage
@@ -73,3 +72,10 @@ For an evaluation run, see `Semester_Project/examples/eval.py`.
 
 
 ...................
+
+# Contact us
+
+[Colin Doumont](...)
+[Christophe Muller]()
+[Andrei Papkou]()
+[Félix Vittori](fvittori@student.ethz.ch)
