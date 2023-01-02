@@ -27,8 +27,8 @@ make download_data
 ## Structure 
 
 Our structure is closely related to the one used in the
-mvae-github-repository as it is the one we built our project upon. 
-Check mvae out: https://github.com/oskopek/mvae
+[MVAE-Github](https://github.com/oskopek/mvae) as it is the one we built our project upon. 
+
 
 
 
