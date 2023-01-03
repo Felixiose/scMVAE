@@ -15,7 +15,4 @@ run:
 eval: 
 	python -m Semester_Project.examples.eval
 
-project: download_data run
-	python -m Semester_Project.examples.eval
-
 

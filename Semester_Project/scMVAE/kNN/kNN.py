@@ -204,13 +204,17 @@ def distance(a, b):
 
         elif manifold_type == StereographicallyProjectedSphereComponent:
 
+<<<<<<< HEAD
             # FIXME: gyro or not gyro? => CHRIS: I think gyro
             distance_sqd += spherical_projected_gyro_distance(a[counter:counter+dim],
                                                               b[counter:counter+dim], curvature)**2
+=======
+            distance_sqd += spherical_projected_gyro_distance(a[counter:counter+dim], b[counter:counter+dim], curvature)**2 
+>>>>>>> 8d86011fd14b29c0e1d008ab4556d3c6e800a1eb
 
         elif manifold_type == PoincareComponent:
 
-            distance_sqd += poincare_distance(a[counter:counter+dim], b[counter:counter+dim], radius)
+            distance_sqd += poincare_distance(a[counter:counter+dim], b[counter:counter+dim], radius)**2
 
         else:
 
