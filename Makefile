@@ -1,10 +1,6 @@
-.PHONY = clean check test conda download_data
+.PHONY = conda download_data run eval
 
-clean:
-	yapf -r -i /Semester_Project 
 
-check: clean
-	flake8 .
 
 
 conda:
@@ -14,3 +10,15 @@ conda:
 download_data:
 	pip install --no-deps geoopt==0.1.0
 	python -m data.download_data
+
+
+run: 
+	python -m Semester_Project.examples.run
+
+eval: 
+	python -m Semester_Project.examples.eval
+
+project: conda download_data 
+	python -m Semester_Project.examples.run
+	python -m Semester_Project.examples.eval
+	

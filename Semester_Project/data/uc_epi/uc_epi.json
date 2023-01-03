@@ -1,0 +1,9 @@
+{
+ "data_file": "./Semester_Project/data/uc_epi/uc_epi.mtx",
+ "label_file": "./Semester_Project/data/uc_epi/uc_epi_celltype.tsv",
+ "batch_files": [
+ 	"./Semester_Project/data/uc_epi/uc_epi_batch_patient.tsv",
+ 	"./Semester_Project/data/uc_epi/uc_epi_batch_location.tsv",
+ 	"./Semester_Project/data/uc_epi/uc_epi_batch_health.tsv"
+ 	],
+}
