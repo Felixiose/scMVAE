@@ -37,7 +37,7 @@ class scRNADataset(VaeDataset):
 
     def __init__(self, batch_size: int, data_folder: str, data_file: str,
                  label_file: str, batch_files: Optional[list] = None,
-                doubles = False) -> None:
+                 doubles=False) -> None:
         # input file paths
         self.data_file = data_file
         self.batch_files = batch_files
@@ -46,32 +46,29 @@ class scRNADataset(VaeDataset):
         self.doubles = doubles
         # read batch effect, labels, data
         print("Reading data from " + self.data_file)
-        if self.batch_files is not None and len(self.batch_files)>0:
+        if self.batch_files is not None and len(self.batch_files) > 0:
             self.batch_data_pd = self._read_batcheff()
-        else:   
+        else:
             self.batch_data_pd = None
-        
+
         self.data = self._read_data()
         self.batch_data = self.df_to_tensor(self.batch_data_pd)
         self.batch_data_dim = self.batch_data.shape[1]
         self.labels, self.label_names = self._read_label()
         self._max_data = self.get_max_data()
 
-
         self.check_dim1()
-        self.dataset = torch.utils.data.TensorDataset(self.data,self.labels)
+        self.dataset = torch.utils.data.TensorDataset(self.data, self.labels)
         self.dataset_len = self.__len__()
-        self._in_dim = self.dataset.tensors[0].shape[1] 
+        self._in_dim = self.dataset.tensors[0].shape[1]
         self._shuffle_split_indx()
         # remove data, labels, batch_data_pd
         self.data = None
         self.labels = None
         self.label_names = None
         self.batch_data_pd = None
-        
 
-        super().__init__(batch_size, img_dims=None, in_dim=self._in_dim) #FIXME: correct dimensions? -Colin
-        
+        super().__init__(batch_size, img_dims=None, in_dim=self._in_dim)  # FIXME: correct dimensions? -Colin
 
     def __len__(self) -> int:
         return self.dataset.tensors[0].size(0)
@@ -105,7 +102,7 @@ class scRNADataset(VaeDataset):
 
     def get_batch_effect(self):
         return self.batch_data
-    
+
     # read batch effect file(s)
     def _read_batcheff(self):
         if len(self.batch_files) == 1:
@@ -118,7 +115,6 @@ class scRNADataset(VaeDataset):
             batch_data = pd.concat(list_batch, axis=1)
         return batch_data
 
-    
     def _read_factorize_data(self, filepath):
         """
         read a file with a single column, factorize to numerical classes 
@@ -126,14 +122,14 @@ class scRNADataset(VaeDataset):
         """
         names = pd.read_csv(filepath, header=None)
         fct = pd.DataFrame(pd.factorize(names[0])[0]+1)
-        
+
         return fct, names
-        
+
     def _read_label(self):
         label_fct, label_names = self._read_factorize_data(self.label_file)
         label_fct = self.df_to_tensor(label_fct)
-        return label_fct, label_names 
-    
+        return label_fct, label_names
+
     # read data and batch effect files
     def _read_data(self):
         """
@@ -158,17 +154,16 @@ class scRNADataset(VaeDataset):
                         dtype='int32')
         dummy = pd.DataFrame(dummy)
         return dummy
-    
+
     def check_dim1(self):
         assert (self.batch_data.shape[0] == self.data.shape[0]
-            ), "batch_data.shape: %s, data.shape: %s" % (
-                self.batch_data.shape[0], self.data.shape[0],
-            )
+                ), "batch_data.shape: %s, data.shape: %s" % (
+            self.batch_data.shape[0], self.data.shape[0],
+        )
         assert (self.labels.shape[0] == self.data.shape[0]
-            ), "labels.shape: %s, data.shape: %s" % (
-                self.labels.shape[0], self.data.shape[0],
-            )
-
+                ), "labels.shape: %s, data.shape: %s" % (
+            self.labels.shape[0], self.data.shape[0],
+        )
 
     def _shuffle_split_indx(self):
         indices = list(range(self.__len__()))
@@ -194,9 +189,9 @@ class scRNADataset(VaeDataset):
             sampler=self.test_sampler,
         )
         return train_loader, test_loader
-        
+
     def reconstruction_loss(self, x_mb_: torch.Tensor, x_mb: torch.Tensor) -> torch.Tensor:
-        
+
         # OPTION 1 : No normalization
 
         x_mb_nonnegative = torch.add(torch.nn.functional.relu(x_mb_), 0.00001)
@@ -204,7 +199,7 @@ class scRNADataset(VaeDataset):
         log_prob = -NegativeBinomial(x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(x_mb)
 
         scale_penalty = 1
-        error = torch.sub(x_mb_,x_mb)
+        error = torch.sub(x_mb_, x_mb)
         penatly_term = torch.sqrt(scale_penalty * (error * error))
 
-        return torch.add(log_prob,penatly_term) 
+        return torch.add(log_prob, penatly_term)

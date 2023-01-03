@@ -20,7 +20,7 @@ def main() -> None:
     parser.add_argument("--epoch", type=int, default=0, help="Model latent space description.")
     parser.add_argument("--dataset",
                         type=str,
-                        default="adipose", 
+                        default="adipose",
                         help="Which dataset to run on. Options: adipose, rgc, celegans, uc_epi")
     parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
     parser.add_argument(
@@ -48,7 +48,7 @@ def main() -> None:
     else:
         torch.set_default_dtype(torch.float32)
 
-    dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = args.doubles) 
+    dataset = create_dataset(dataset_type=args.dataset, batch_size=args.batch_size, doubles=args.doubles)
     print("#####")
     cur_time = datetime.datetime.utcnow().isoformat()
     components = utils.parse_components(args.model, False)
@@ -56,7 +56,7 @@ def main() -> None:
     print(f"Eval VAE Model: {model_name}; Time: {cur_time}; Dataset: {args.dataset}")
     print("#####", flush=True)
 
-    if args.dataset in ["adipose", "rgc", "celegans", "uc_epi"]:    
+    if args.dataset in ["adipose", "rgc", "celegans", "uc_epi"]:
         model_cls = FeedForwardVAE  # type: ignore
     else:
         raise ValueError(f"Unknown dataset '{args.dataset}'.")

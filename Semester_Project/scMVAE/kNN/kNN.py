@@ -31,7 +31,7 @@ def main() -> None:
     parser.add_argument("--universal", type=str2bool, default=False, help="Universal training scheme.")
     parser.add_argument("--dataset",
                         type=str,
-                        default="adipose", 
+                        default="adipose",
                         help="Which dataset to run on. Options: adipose, rgc, celegans")
     parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
@@ -89,30 +89,30 @@ def main() -> None:
     else:
         torch.set_default_dtype(torch.float32)
 
-
     COMPONENTS = utils.parse_components(args.model, args.fixed_curvature)
 
 
 def load_model():
 
-    dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = args.doubles) 
+    dataset = create_dataset(dataset_type=args.dataset, batch_size=args.batch_size, doubles=args.doubles)
 
     model = FeedForwardVAE(h_dim=args.h_dim,
-                        components=COMPONENTS,
-                        dataset=dataset,
-                        scalar_parametrization=args.scalar_parametrization)
+                           components=COMPONENTS,
+                           dataset=dataset,
+                           scalar_parametrization=args.scalar_parametrization)
 
     return model, dataset
-    
+
 
 def create_loaders(model, dataset):
-    
+
     model.load_state_dict(torch.load(args.chkpt, map_location=args.device))
     print("Loaded model: FeedForwardVAE at epoch", args.epochs, "from", args.chkpt)
 
     train_loader, test_loader = dataset.create_loaders(args.batch_size)
-    
+
     return train_loader, test_loader
+
 
 def create_X_y(model, loader):
 
@@ -132,15 +132,16 @@ def create_X_y(model, loader):
     y_list.pop(0)
 
     for tensor in X_list:
-        big_X = torch.cat((big_X,tensor))
+        big_X = torch.cat((big_X, tensor))
 
     for tensor in y_list:
-        big_y = torch.cat((big_y,tensor))
-    
+        big_y = torch.cat((big_y, tensor))
+
     return big_X, big_y
 
+
 def create_manifold_list(model):
-    
+
     manifold_list = []
 
     for i, component in enumerate(model.components):
@@ -169,7 +170,8 @@ X_train, y_train = create_X_y(model, train_loader)
 X_test, y_test = create_X_y(model, test_loader)
 manifold_list = create_manifold_list(model)
 
-#FIXME: what about UniversalComponent?
+# FIXME: what about UniversalComponent?
+
 
 def distance(a, b):
 
@@ -182,7 +184,7 @@ def distance(a, b):
     for manifold_type, dim, curvature in manifold_list:
 
         if curvature != 0:
-            radius = torch.Tensor([1/math.sqrt(abs(curvature))]).double()                                        #CHRIS: Removed (+1)
+            radius = torch.Tensor([1/math.sqrt(abs(curvature))]).double()  # CHRIS: Removed (+1)
         else:
             radius = None
 
@@ -202,7 +204,9 @@ def distance(a, b):
 
         elif manifold_type == StereographicallyProjectedSphereComponent:
 
-            distance_sqd += spherical_projected_gyro_distance(a[counter:counter+dim], b[counter:counter+dim], curvature)**2    #FIXME: gyro or not gyro? => CHRIS: I think gyro
+            # FIXME: gyro or not gyro? => CHRIS: I think gyro
+            distance_sqd += spherical_projected_gyro_distance(a[counter:counter+dim],
+                                                              b[counter:counter+dim], curvature)**2
 
         elif manifold_type == PoincareComponent:
 
@@ -219,17 +223,14 @@ def distance(a, b):
 
 def kNN(X_train, X_test, y_train, y_test):
 
-    #train
-    parameters = {'n_neighbors':[2, 4, 8]}
+    # train
+    parameters = {'n_neighbors': [2, 4, 8]}
     clf = GridSearchCV(KNeighborsClassifier(metric=distance, n_jobs=-1), parameters, cv=5, n_jobs=-1)
     clf.fit(X_train, y_train)
 
-    #evaluate
+    # evaluate
     y_pred = clf.predict(X_test)
     print(f"Accuracy: {accuracy_score(y_test, y_pred)}")
-
-
-
 
 
 if __name__ == '__main__':

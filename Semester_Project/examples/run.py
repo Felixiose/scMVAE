@@ -6,7 +6,7 @@ import torch
 
 from ..data.utils import create_dataset
 from ..scMVAE import utils
-from ..scMVAE.models import Trainer, FeedForwardVAE 
+from ..scMVAE.models import Trainer, FeedForwardVAE
 from ..utils import str2bool
 
 
@@ -23,7 +23,7 @@ def main() -> None:
     parser.add_argument("--universal", type=str2bool, default=False, help="Universal training scheme.")
     parser.add_argument("--dataset",
                         type=str,
-                        default="adipose", 
+                        default="adipose",
                         help="Which dataset to run on. Options: adipose, rgc, celegans, uc_epi")
     parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
     parser.add_argument("--seed", type=int, default=None, help="Random seed.")
@@ -81,9 +81,10 @@ def main() -> None:
     else:
         torch.set_default_dtype(torch.float32)
 
-    dataset = create_dataset(dataset_type = args.dataset, batch_size=args.batch_size, doubles = args.doubles) #TODO Andrei look if this fits your dataclass
+    dataset = create_dataset(dataset_type=args.dataset, batch_size=args.batch_size,
+                             doubles=args.doubles)  # TODO Andrei look if this fits your dataclass
     print("#####")
-    cur_time = datetime.datetime.utcnow().isoformat().replace(':','_')
+    cur_time = datetime.datetime.utcnow().isoformat().replace(':', '_')
     components = utils.parse_components(args.model, args.fixed_curvature)
     model_name = utils.canonical_name(components)
     print(f"VAE Model: {model_name}; Epochs: {args.epochs}; Time: {cur_time}; Fixed curvature: {args.fixed_curvature}; "
@@ -92,7 +93,6 @@ def main() -> None:
     chkpt_dir = f"./chkpt/vae-{args.dataset}-{model_name}-{cur_time}"
     os.makedirs(chkpt_dir)
 
-  
     model_cls = FeedForwardVAE
     model = model_cls(h_dim=args.h_dim,
                       components=components,
@@ -159,7 +159,6 @@ def main() -> None:
     print(flush=True)
     print("Done.", flush=True)
 
-   
 
 if __name__ == "__main__":
     # with torch.autograd.set_detect_anomaly(True):

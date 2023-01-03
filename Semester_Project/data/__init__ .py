@@ -13,7 +13,7 @@
 # limitations under the License.
 # ==============================================================================
 
-from typing import Any
+
 
 from scRNADataset import scRNADataset
 from .vae_dataset import VaeDataset
@@ -24,4 +24,3 @@ __all__ = [
     "VaeDataset",
     "create_dataset",
 ]
-

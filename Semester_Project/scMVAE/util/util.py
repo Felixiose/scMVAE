@@ -1,9 +1,9 @@
 import numpy as np
 import scipy.sparse as sparse
-#import tensorflow as tf
+import tensorflow as tf
 import logging
 
-#from scphere.distributions import VonMisesFisher
+from scphere.distributions import VonMisesFisher
 
 logging.basicConfig(
     level=logging.INFO,
@@ -51,5 +51,3 @@ def transform_mtx(x, transform_type='log'):
         logger.error(f'transform_type should be either log, log2, or log10')
 
     return x
-
-
