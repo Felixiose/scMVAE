@@ -6,7 +6,7 @@ import torch
 from ..data.utils import create_dataset
 from ..scMVAE import utils
 from ..scMVAE.models import FeedForwardVAE
-from ..scMVAE.stats import EpochStats
+from ..scMVAE.util.stats import EpochStats
 from ..utils import str2bool
 
 
