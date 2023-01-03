@@ -91,7 +91,7 @@ def main() -> None:
     print(f"VAE Model: {model_name}; Epochs: {args.epochs}; Time: {cur_time}; Fixed curvature: {args.fixed_curvature}; "
           f"Dataset: {args.dataset}")
     print("#####", flush=True)
-    chkpt_dir = f"./chkpt/vae-{args.id}-{args.dataset}-{model_name}-fc{args.fixed_curvature}-uni{args.universal}-see{args.seed}-{cur_time}"
+    chkpt_dir = f"./chkpt/vae-{args.id}-{args.dataset}-{args.model}-fc{args.fixed_curvature}-uni{args.universal}-see{args.seed}-{cur_time}"
     os.makedirs(chkpt_dir)
 
     model_cls = FeedForwardVAE
