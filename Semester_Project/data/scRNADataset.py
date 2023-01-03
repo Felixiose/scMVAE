@@ -18,7 +18,7 @@ import pandas as pd
 import numpy as np
 from scipy.io import mmread
 import torch
-from torch.utils.data import DataLoader, SubsetRandomSampler
+from torch.utils.data import DataLoader, SubsetRandomSampler, SequentialSampler
 from Semester_Project.data.vae_dataset import VaeDataset
 from torch.distributions import NegativeBinomial
 
@@ -189,6 +189,17 @@ class scRNADataset(VaeDataset):
             sampler=self.test_sampler,
         )
         return train_loader, test_loader
+    
+    def create_sequential_loader(self, batch_size: int) -> Tuple[DataLoader, DataLoader]:
+        seq_loader = DataLoader(
+            dataset=self.dataset,
+            batch_size=batch_size,
+            num_workers=8,
+            pin_memory=True,
+            suffle=False
+            sampler=SequentialSampler(self.dataset),
+        )
+        return seq_loader
 
     def reconstruction_loss(self, x_mb_: torch.Tensor, x_mb: torch.Tensor) -> torch.Tensor:
 
