@@ -19,6 +19,7 @@ from ..kNN.distances import euclidean_distance, spherical_distance, spherical_pr
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="M-VAE runner.")
+    parser.add_argument("--id", type=str, default="id", help="A custom run id to keep track of experiments")
     parser.add_argument("--device", type=str, default="cuda", help="Whether to use cuda or cpu.")
     parser.add_argument("--data", type=str, default="./data", help="Data directory.")
     parser.add_argument("--batch_size", type=int, default=100, help="Batch size.")
