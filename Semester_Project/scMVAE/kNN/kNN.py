@@ -1,15 +1,16 @@
 import torch
+import math
+import os
+import numpy as np
+import pickle
+
 from ...scMVAE.models import FeedForwardVAE
 import argparse
 from ...scMVAE import utils
 from ...utils import str2bool
 from ...data.utils import create_dataset
-
 from ...scMVAE.components.component import *
-import math
-
-import numpy as np
-from scipy.spatial import distance
+#from scipy.spatial import distance
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score
@@ -18,6 +19,7 @@ from ..kNN.distances import euclidean_distance, spherical_distance, spherical_pr
 
 
 parser = argparse.ArgumentParser(description="M-VAE runner.")
+parser.add_argument("--id", type=str, default="id", help="A custom run id to keep track of experiments")
 parser.add_argument("--device", type=str, default="cuda", help="Whether to use cuda or cpu.")
 parser.add_argument("--data", type=str, default="./data", help="Data directory.")
 parser.add_argument("--batch_size", type=int, default=100, help="Batch size.")
@@ -88,7 +90,8 @@ if args.doubles:
 else:
     torch.set_default_dtype(torch.float32)
 
-
+print(args.model)
+print(args.fixed_curvature)
 COMPONENTS = utils.parse_components(args.model, args.fixed_curvature)
 
 
@@ -162,13 +165,14 @@ def create_manifold_list(model):
     return manifold_list
 
 
+#FIXME: what about UniversalComponent?
+
+
 model, dataset = load_model()
 train_loader, test_loader = create_loaders(model, dataset)
 X_train, y_train = create_X_y(model, train_loader)
 X_test, y_test = create_X_y(model, test_loader)
 manifold_list = create_manifold_list(model)
-
-#FIXME: what about UniversalComponent?
 
 def distance(a, b):
 
@@ -216,6 +220,7 @@ def distance(a, b):
     return math.sqrt(distance_sqd)
 
 
+
 def kNN(X_train, X_test, y_train, y_test):
 
     #train
@@ -225,11 +230,32 @@ def kNN(X_train, X_test, y_train, y_test):
 
     #evaluate
     y_pred = clf.predict(X_test)
-    print(f"Accuracy: {accuracy_score(y_test, y_pred)}")
+    return (accuracy_score(y_test, y_pred),clf)
 
 
 X_train = X_train.detach().numpy().astype(np.float64)
 X_test = X_test.detach().numpy().astype(np.float64)
 y_train = y_train.detach().numpy().astype(np.float64).ravel()
 y_test = y_test.detach().numpy().astype(np.float64).ravel()
-kNN(X_train, X_test, y_train, y_test)
+
+accuracy, classifier = kNN(X_train, X_test, y_train, y_test)
+
+save_path_acc = os.path.dirname(args.chkpt) + "/" +args.id+ "_knn_accuracy.tsv"
+save_path_clf = os.path.dirname(args.chkpt) + "/" +args.id+ "_knn_classifier.pickle"
+save_path_manifold = os.path.dirname(args.chkpt) + "/" +args.id+ "_manifold_list.pickle"
+
+
+print("Saving results in" + os.path.dirname(args.chkpt) )
+
+
+with open(save_path_acc, 'w') as tsv:
+        tsv.write(f"{args.id}\t{args.dataset}\t{args.model}\t{args.fixed_curvature}\t{args.universal}\t{args.seed}\t{accuracy}")
+
+
+with open(save_path_clf, 'wb') as f:
+    pickle.dump(classifier, f)
+
+
+with open(save_path_manifold, 'wb') as f:
+    pickle.dump(manifold_list, f)
+
