@@ -17,81 +17,80 @@ from sklearn.metrics import accuracy_score
 from ..kNN.distances import euclidean_distance, spherical_distance, spherical_projected_gyro_distance, lorentz_distance, poincare_distance
 
 
-#FIXME: are the distances above already squared??
+def main() -> None:
+    parser = argparse.ArgumentParser(description="M-VAE runner.")
+    parser.add_argument("--device", type=str, default="cuda", help="Whether to use cuda or cpu.")
+    parser.add_argument("--data", type=str, default="./data", help="Data directory.")
+    parser.add_argument("--batch_size", type=int, default=100, help="Batch size.")
+    parser.add_argument("--chkpt", type=str, default="", help="Model latent space description.")
+    parser.add_argument("--learning_rate", type=float, default=1e-3, help="Learning rate.")
+    parser.add_argument("--epochs", type=int, default=500, help="Number of epochs.")
+    parser.add_argument("--warmup", type=int, default=100, help="Number of epochs.")
+    parser.add_argument("--lookahead", type=int, default=50, help="Number of epochs.")
+    parser.add_argument("--model", type=str, default="h2,s2,e2", help="Model latent space description.")
+    parser.add_argument("--universal", type=str2bool, default=False, help="Universal training scheme.")
+    parser.add_argument("--dataset",
+                        type=str,
+                        default="adipose", 
+                        help="Which dataset to run on. Options: adipose, rgc, celegans")
+    parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed.")
+    parser.add_argument(
+        "--show_embeddings",
+        type=int,
+        default=0,
+        help="Show embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
+    parser.add_argument(
+        "--export_embeddings",
+        type=int,
+        default=0,
+        help="Export embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
+    parser.add_argument("--test_every",
+                        type=int,
+                        default=0,
+                        help="Test every N epochs during training. Non-positive values mean never.")
+    parser.add_argument("--train_statistics",
+                        type=str2bool,
+                        default=False,
+                        help="Show Tensorboard statistics for training.")
+    parser.add_argument(
+        "--scalar_parametrization",
+        type=str2bool,
+        default=False,
+        help="Use a spheric covariance matrix (single scalar) if true, or elliptic (diagonal covariance matrix) if "
+        "false.")
+    parser.add_argument("--fixed_curvature",
+                        type=str2bool,
+                        default=True,
+                        help="Whether to fix curvatures to (-1, 0, 1).")
+    parser.add_argument("--doubles", type=str2bool, default=True, help="Use float32 or float64. Default float32.")
+    parser.add_argument("--beta_start", type=float, default=1.0, help="Beta-VAE beginning value.")
+    parser.add_argument("--beta_end", type=float, default=1.0, help="Beta-VAE end value.")
+    parser.add_argument("--beta_end_epoch", type=int, default=1, help="Beta-VAE end epoch (0 to epochs-1).")
+    parser.add_argument("--likelihood_n",
+                        type=int,
+                        default=500,
+                        help="How many samples to use for LL estimation. Value 0 disables LL estimation.")
+    args = parser.parse_args()
 
-parser = argparse.ArgumentParser(description="M-VAE runner.")
-parser.add_argument("--device", type=str, default="cuda", help="Whether to use cuda or cpu.")
-parser.add_argument("--data", type=str, default="./data", help="Data directory.")
-parser.add_argument("--batch_size", type=int, default=100, help="Batch size.")
-parser.add_argument("--chkpt", type=str, default="", help="Model latent space description.")
-parser.add_argument("--learning_rate", type=float, default=1e-3, help="Learning rate.")
-parser.add_argument("--epochs", type=int, default=500, help="Number of epochs.")
-parser.add_argument("--warmup", type=int, default=100, help="Number of epochs.")
-parser.add_argument("--lookahead", type=int, default=50, help="Number of epochs.")
-parser.add_argument("--model", type=str, default="h2,s2,e2", help="Model latent space description.")
-parser.add_argument("--universal", type=str2bool, default=False, help="Universal training scheme.")
-parser.add_argument("--dataset",
-                    type=str,
-                    default="adipose", 
-                    help="Which dataset to run on. Options: adipose, rgc, celegans")
-parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
-parser.add_argument("--seed", type=int, default=None, help="Random seed.")
-parser.add_argument(
-    "--show_embeddings",
-    type=int,
-    default=0,
-    help="Show embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
-parser.add_argument(
-    "--export_embeddings",
-    type=int,
-    default=0,
-    help="Export embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
-parser.add_argument("--test_every",
-                    type=int,
-                    default=0,
-                    help="Test every N epochs during training. Non-positive values mean never.")
-parser.add_argument("--train_statistics",
-                    type=str2bool,
-                    default=False,
-                    help="Show Tensorboard statistics for training.")
-parser.add_argument(
-    "--scalar_parametrization",
-    type=str2bool,
-    default=False,
-    help="Use a spheric covariance matrix (single scalar) if true, or elliptic (diagonal covariance matrix) if "
-    "false.")
-parser.add_argument("--fixed_curvature",
-                    type=str2bool,
-                    default=True,
-                    help="Whether to fix curvatures to (-1, 0, 1).")
-parser.add_argument("--doubles", type=str2bool, default=True, help="Use float32 or float64. Default float32.")
-parser.add_argument("--beta_start", type=float, default=1.0, help="Beta-VAE beginning value.")
-parser.add_argument("--beta_end", type=float, default=1.0, help="Beta-VAE end value.")
-parser.add_argument("--beta_end_epoch", type=int, default=1, help="Beta-VAE end epoch (0 to epochs-1).")
-parser.add_argument("--likelihood_n",
-                    type=int,
-                    default=500,
-                    help="How many samples to use for LL estimation. Value 0 disables LL estimation.")
-args = parser.parse_args()
+    if args.seed:
+        print("Using pre-set random seed:", args.seed)
+        utils.set_seeds(args.seed)
 
-if args.seed:
-    print("Using pre-set random seed:", args.seed)
-    utils.set_seeds(args.seed)
+    if not torch.cuda.is_available():
+        args.device = "cpu"
+        print("CUDA is not available.")
+    args.device = torch.device(args.device)
+    utils.setup_gpu(args.device)
+    print("Running on:", args.device, flush=True)
 
-if not torch.cuda.is_available():
-    args.device = "cpu"
-    print("CUDA is not available.")
-args.device = torch.device(args.device)
-utils.setup_gpu(args.device)
-print("Running on:", args.device, flush=True)
-
-if args.doubles:
-    torch.set_default_dtype(torch.float64)
-else:
-    torch.set_default_dtype(torch.float32)
+    if args.doubles:
+        torch.set_default_dtype(torch.float64)
+    else:
+        torch.set_default_dtype(torch.float32)
 
 
-COMPONENTS = utils.parse_components(args.model, args.fixed_curvature)
+    COMPONENTS = utils.parse_components(args.model, args.fixed_curvature)
 
 
 def load_model():
@@ -221,9 +220,13 @@ def kNN(X_train, X_test, y_train, y_test):
     print(accuracy_score(y_test, y_pred))
 
 
-X_train = X_train.detach().numpy().astype(np.float64)
-X_test = X_test.detach().numpy().astype(np.float64)
-y_train = y_train.detach().numpy().astype(np.float64).ravel()
-y_test = y_test.detach().numpy().astype(np.float64).ravel()
 
-kNN(X_train, X_test, y_train, y_test)
+
+
+if __name__ == '__main__':
+    main()
+    X_train = X_train.detach().numpy().astype(np.float64)
+    X_test = X_test.detach().numpy().astype(np.float64)
+    y_train = y_train.detach().numpy().astype(np.float64).ravel()
+    y_test = y_test.detach().numpy().astype(np.float64).ravel()
+    kNN(X_train, X_test, y_train, y_test)

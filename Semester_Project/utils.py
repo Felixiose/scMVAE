@@ -17,15 +17,7 @@ import argparse
 
 
 def str2bool(v: str) -> bool:
-    """Turns string "true" or "false" to bool
-    _
-    Args:
-        v (str): string with true or false
-    Raises:
-        argparse.ArgumentTypeError: didn't understand the input
-    Returns:
-        bool: return True or False in boolean
-    """
+
     v = v.lower()
     if v == "true":
         return True
