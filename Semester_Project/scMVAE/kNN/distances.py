@@ -9,10 +9,8 @@ from ...scMVAE.ops.hyperbolics import acosh, lorentz_product
 def _c(radius: Tensor) -> Tensor:
     return 1 / radius**2
 
-
 def poincare_distance(x: Tensor, y: Tensor, radius: Tensor, **kwargs: Any) -> Tensor:
     return poincare_distance_c(x, y, _c(radius), **kwargs)
-
 
 def poincare_distance_c(x: Tensor, y: Tensor, c: Tensor, keepdim: bool = True, **kwargs: Any) -> Tensor:
     # res = pm.dist(x, y, c=c, keepdim=keepdim, **kwargs)
@@ -34,9 +32,7 @@ def mob_add(x: Tensor, y: Tensor, K: Tensor) -> Tensor:
     # return ((1 - 2 * K * prod - K * normy2) * x + (1 + K * normx2) * y) / denom.clamp(min=MIN_NORM)
     return pm.mobius_add(x, y, c=-K)
 
-# Definiton of the spherical projected distance
-
-
+#Definiton of the spherical projected distance
 def spherical_projected_distance(x: Tensor, y: Tensor, K: Tensor, **kwargs: Any) -> Tensor:
     diff = x - y
     normxmy2 = torch.sum(diff * diff, dim=-1, keepdim=True)
@@ -46,9 +42,7 @@ def spherical_projected_distance(x: Tensor, y: Tensor, K: Tensor, **kwargs: Any)
     assert torch.isfinite(dist).all()
     return dist
 
-# Definition of the spherical projected gyro distance
-
-
+#Definition of the spherical projected gyro distance
 def spherical_projected_gyro_distance(x: Tensor, y: Tensor, K: Tensor, **kwargs: Any) -> Tensor:
     sqrt_K = sqrt(K)
     sm = mob_add(-x, y, K)
@@ -56,24 +50,23 @@ def spherical_projected_gyro_distance(x: Tensor, y: Tensor, K: Tensor, **kwargs:
     return 2. / sqrt_K * torch.atan(sqrt_K * normxy)
 
 
-# Definition of the euclidean distance
+#Definition of the euclidean distance
 def euclidean_distance(x: torch.Tensor, y: torch.Tensor, **kwargs: Any) -> torch.Tensor:
     return 2 * torch.norm(x - y, dim=-1, p=2, keepdim=True)
 
 
-# Definition of the spherical distances
+#Definition of the spherical distances
 def spherical_distance(x: torch.Tensor, y: torch.Tensor, radius: torch.Tensor, **kwargs: Any) -> torch.Tensor:
     ndot = torch.sum(x * y, dim=-1, keepdim=True) / radius**2
     acos = torch.acos(torch.clamp(ndot, min=-1., max=1.))
     return radius * acos
 
 
-# Defintion of the lorenz distance
 def lorentz_distance(x: torch.Tensor, y: torch.Tensor, radius: torch.Tensor, **kwargs: Any) -> torch.Tensor:
     return radius * acosh(-lorentz_product(x, y, **kwargs) / (radius**2))
 
 
-# Definition of the lorentz product
+#Definition of the lorentz product
 def lorentz_product(x: Tensor, y: Tensor, keepdim: bool = False, dim: int = -1) -> Tensor:
 
     m = x * y
