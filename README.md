@@ -33,14 +33,14 @@ Our structure is closely related to the one used in the
 
 
 
-* `Semster_Project/` - Source folder 
-  * *`data/`* - Data loading, preprocessing, batching, and pre-trained embeddings.
-  * *`examples/`* - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. _changed to our needs from mvae_
-  * *`scMVAE/`* - Model directory. Note that models heavily use inheritance!
+* **`Semster_Project/`** - Source folder 
+  * **`data/`** - Data loading, preprocessing, batching, and pre-trained embeddings.
+  * **`examples/`** - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. _changed to our needs from mvae_
+  * **`scMVAE/`** - Model directory. Note that models heavily use inheritance!
     * `components/`- from mvae, contains the components for training
     * `distributions/` - from mvae, contains different spaces
-    *  *`kNN/`* - contains the code for clustering 
-    * *`model/`* - contains the ffnn_vae model (our contribution) and the vae.py object from which we inherit the model. In addition we have a training class, also from mvae
+    *  **`kNN/`** - contains the code for clustering 
+    * **`model/`** - contains the ffnn_vae model (our contribution) and the vae.py object from which we inherit the model. In addition we have a training class, also from mvae
     * `ops/` - operations definitions from mvae
     * `sampling/`- sampling methods from mvae
     * `utils/` - different data handling utils
@@ -48,9 +48,9 @@ Our structure is closely related to the one used in the
   * `utils.py/` - Containt parsing utility function
 * `data/` - Data folder. Contains a script necessary for downloading the datasets we used. 
 * `scripts/` - Contains scripts to run experiments and plot the results. _From MVAE_
-* *`Makefile`* - Defines "aliases" for various tasks.
-* *`README.md`* - This manual.
-* *`environment.yml`* - Required Python packages.
+* **`Makefile`** - Defines "aliases" for various tasks.
+* **`README.md`** - This manual.
+* **`environment.yml`** - Required Python packages.
 
 
 In Bold files that were changed or created by us. The rest of the script is from the MVAE script.
