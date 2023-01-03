@@ -29,9 +29,6 @@ Our structure is closely related to the one used in the
 [MVAE-Github](https://github.com/oskopek/mvae) as it is the one we built our project upon. 
 
 
-
-
-
 * **`Semster_Project/`** - Source folder 
   * **`data/`** - Data loading, preprocessing, batching, and pre-trained embeddings.
   * **`examples/`** - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. 
@@ -72,6 +69,11 @@ python -m Semester_Project.examples.run
 Take a look at `Semester_Project/examples/run.py` for a list of command line arguments.
 
 For an evaluation run, see `Semester_Project/examples/eval.py`.
+
+
+# Todo 
+
+Colin fix distances.py
 
 
 
