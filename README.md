@@ -38,9 +38,9 @@ Our structure is closely related to the one used in the
   * **`scMVAE/`** - folder containing files for the model definition
     * `components/`- contains the components for training
     * `distributions/` - contains different spaces
-    *  ** `kNN/` ** - contains the code for clustering and evaluation
+    *  **`kNN/`** - contains the code for clustering and evaluation
       * **`distances.py`** - contains the definitions of the different distances
-      * ** `kNN.py` ** - main loop for clustering and evaluation
+      * **`kNN.py`** - main loop for clustering and evaluation
     * **`model/`** - 
       * **`ffn_vae.py`** - simple feedforward network with one recurrent branch passing the batch effect
       * `train.py` - class for training the model
