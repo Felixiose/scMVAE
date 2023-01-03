@@ -34,12 +34,17 @@ Our structure is closely related to the one used in the
 
 * **`Semster_Project/`** - Source folder 
   * **`data/`** - Data loading, preprocessing, batching, and pre-trained embeddings.
-  * **`examples/`** - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. _changed to our needs from mvae_
-  * **`scMVAE/`** - Model directory. Note that models heavily use inheritance!
-    * `components/`- from mvae, contains the components for training
-    * `distributions/` - from mvae, contains different spaces
-    *  **`kNN/`** - contains the code for clustering 
-    * **`model/`** - contains the ffnn_vae model (our contribution) and the vae.py object from which we inherit the model. In addition we have a training class, also from mvae
+  * **`examples/`** - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. 
+  * **`scMVAE/`** - folder containing files for the model definition
+    * `components/`- contains the components for training
+    * `distributions/` - contains different spaces
+    *  **`kNN/`** - contains the code for clustering and evaluation
+      * **`distances.py` - contains the definitions of the different distances
+      * ** `kNN.py`- main loop for clustering and evaluation
+    * **`model/`** - 
+      * **`ffn_vae.py`** - simple feedforward network with one recurrent branch passing the batch effect
+      * `train.py` - class for training the model
+      * `vae.py` - class for we inherit from in ffn_vae.py
     * `ops/` - operations definitions from mvae
     * `sampling/`- sampling methods from mvae
     * `utils/` - different data handling utils
