@@ -10,7 +10,6 @@ Félix Vittori
 
 
 > This repository contains the implementation of our Semester Project for the class Deep Learning 263-3210-00L at ETH Zurich.
-> For further information about this project visit https://github.com/.
 > To run this project follow the steps layed out below
 
 
