@@ -196,7 +196,7 @@ class scRNADataset(VaeDataset):
             batch_size=batch_size,
             num_workers=8,
             pin_memory=True,
-            suffle=False
+            suffle=False,
             sampler=SequentialSampler(self.dataset),
         )
         return seq_loader
