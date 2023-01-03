@@ -12,6 +12,7 @@ from ..utils import str2bool
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="M-VAE runner.")
+    parser.add_argument("--id", type=str, default="id", help="A custom run id to keep track of experiments")
     parser.add_argument("--device", type=str, default="cuda", help="Whether to use cuda or cpu.")
     parser.add_argument("--data", type=str, default="./data", help="Data directory.")
     parser.add_argument("--batch_size", type=int, default=100, help="Batch size.")
@@ -82,7 +83,7 @@ def main() -> None:
         torch.set_default_dtype(torch.float32)
 
     dataset = create_dataset(dataset_type=args.dataset, batch_size=args.batch_size,
-                             doubles=args.doubles)  # TODO Andrei look if this fits your dataclass
+                             doubles=args.doubles) 
     print("#####")
     cur_time = datetime.datetime.utcnow().isoformat().replace(':', '_')
     components = utils.parse_components(args.model, args.fixed_curvature)
@@ -90,7 +91,7 @@ def main() -> None:
     print(f"VAE Model: {model_name}; Epochs: {args.epochs}; Time: {cur_time}; Fixed curvature: {args.fixed_curvature}; "
           f"Dataset: {args.dataset}")
     print("#####", flush=True)
-    chkpt_dir = f"./chkpt/vae-{args.dataset}-{model_name}-{cur_time}"
+    chkpt_dir = f"./chkpt/vae-{args.id}-{args.dataset}-{model_name}-fc{args.fixed_curvature}-uni{args.universal}-{cur_time}"
     os.makedirs(chkpt_dir)
 
     model_cls = FeedForwardVAE
