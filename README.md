@@ -53,7 +53,7 @@ Our structure is closely related to the one used in the
 * **`environment.yml`** - Required Python packages.
 
 
-In Bold files that were changed or created by us. The rest of the script is from the MVAE script.
+In bold are files that were changed or created by us. The rest of the script is from the MVAE script.
 
 ## Usage
 
