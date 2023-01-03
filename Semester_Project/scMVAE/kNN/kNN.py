@@ -149,6 +149,14 @@ def create_manifold_list(model):
         dim = component.true_dim
         curvature = float(component.manifold.curvature)
 
+        if manifold_type == UniversalComponent:
+            if curvature > 0:
+                manifold_type = StereographicallyProjectedSphereComponent
+            elif curvature < 0:
+                manifold_type = PoincareComponent
+            else:
+                manifold_type = EuclideanComponent
+
         manifold = (manifold_type, dim, curvature)
         manifold_list.append(manifold)
 
@@ -177,6 +185,8 @@ def distance(a, b):
             radius = torch.Tensor([1/math.sqrt(abs(curvature))]).double()                                        #CHRIS: Removed (+1)
         else:
             radius = None
+
+        curvature = torch.Tensor([curvature]).double()
 
         if manifold_type in [EuclideanComponent, ConstantComponent]:
 
@@ -216,8 +226,7 @@ def kNN(X_train, X_test, y_train, y_test):
 
     #evaluate
     y_pred = clf.predict(X_test)
-    # print(classification_report(y_test, y_pred))
-    print(accuracy_score(y_test, y_pred))
+    print(f"Accuracy: {accuracy_score(y_test, y_pred)}")
 
 
 
