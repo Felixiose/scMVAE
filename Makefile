@@ -18,7 +18,6 @@ run:
 eval: 
 	python -m Semester_Project.examples.eval
 
-project: conda download_data 
-	python -m Semester_Project.examples.run
+project: conda download_data run
 	python -m Semester_Project.examples.eval
 	
