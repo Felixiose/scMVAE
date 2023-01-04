@@ -209,7 +209,7 @@ def distance(a, b):
 
         elif manifold_type == PoincareComponent:
 
-            distance_sqd += poincare_distance(a[counter:counter+dim], b[counter:counter+dim], radius)
+            distance_sqd += poincare_distance(a[counter:counter+dim], b[counter:counter+dim], radius)**2
 
         else:
 
