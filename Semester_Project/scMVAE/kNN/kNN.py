@@ -185,7 +185,7 @@ def distance(a, b):
     for manifold_type, dim, curvature in manifold_list:
 
         if curvature != 0:
-            radius = torch.Tensor([1/math.sqrt(abs(curvature))]).double()                                        #CHRIS: Removed (+1)
+            radius = torch.Tensor([1/math.sqrt(abs(curvature))]).double()                                        
         else:
             radius = None
 
@@ -205,11 +205,11 @@ def distance(a, b):
 
         elif manifold_type == StereographicallyProjectedSphereComponent:
 
-            distance_sqd += spherical_projected_gyro_distance(a[counter:counter+dim], b[counter:counter+dim], curvature)**2    #FIXME: gyro or not gyro? => CHRIS: I think gyro
+            distance_sqd += spherical_projected_gyro_distance(a[counter:counter+dim], b[counter:counter+dim], curvature)**2
 
         elif manifold_type == PoincareComponent:
 
-            distance_sqd += poincare_distance(a[counter:counter+dim], b[counter:counter+dim], radius)
+            distance_sqd += poincare_distance(a[counter:counter+dim], b[counter:counter+dim], radius)**2
 
         else:
 
