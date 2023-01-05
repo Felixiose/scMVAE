@@ -73,18 +73,13 @@ Take a look at `Semester_Project/examples/run.py` for a list of command line arg
 For an evaluation run, see `Semester_Project/examples/eval.py`.
 
 
-# Todo 
-
-Colin fix distances.py
 
 
 
-# References 
 
 
-...................
 
-# Contact us
+## Contact us
 
 [Colin Doumont](mailto:cdoumont@student.ethz.ch)\
 [Christophe Muller](mailto:mullec@student.ethz.ch)\
