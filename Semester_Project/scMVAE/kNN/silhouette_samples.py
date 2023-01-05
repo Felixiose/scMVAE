@@ -38,24 +38,7 @@ parser.add_argument("--dataset",
                     help="Which dataset to run on. Options: adipose, rgc, celegans")
 parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
 parser.add_argument("--seed", type=int, default=None, help="Random seed.")
-# parser.add_argument(
-    # "--show_embeddings",
-    # type=int,
-    # default=0,
-    # # help="Show embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
-# parser.add_argument(
-    # "--export_embeddings",
-    # type=int,
-    # # default=0,
-    # help="Export embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
-# parser.add_argument("--test_every",
-                    # type=int,
-                    # default=0,
-                    # # help="Test every N epochs during training. Non-positive values mean never.")
-# parser.add_argument("--train_statistics",
-                    # type=str2bool,
-                    # default=False,
-                    # help="Show Tensorboard statistics for training.")
+
 parser.add_argument(
     "--scalar_parametrization",
     type=str2bool,
@@ -67,13 +50,7 @@ parser.add_argument("--fixed_curvature",
                     default=True,
                     help="Whether to fix curvatures to (-1, 0, 1).")
 parser.add_argument("--doubles", type=str2bool, default=True, help="Use float32 or float64. Default float32.")
-# parser.add_argument("--beta_start", type=float, default=1.0, help="Beta-VAE beginning value.")
-# parser.add_argument("--beta_end", type=float, default=1.0, help="Beta-VAE end value.")
-# parser.add_argument("--beta_end_epoch", type=int, default=1, help="Beta-VAE end epoch (0 to epochs-1).")
-# parser.add_argument("--likelihood_n",
-                    # type=int,
-                    # default=500,
-                    # help="How many samples to use for LL estimation. Value 0 disables LL estimation.")
+
 parser.add_argument("--batch_file", type=str, default=None, help="Path to a file with labels or batch effects")
 parser.add_argument("--n", type=int, default=5000, help="Path to a file with labels or batch effects")
 parser.add_argument("--size", type=int, default=10, help="Path to a file with labels or batch effects")
@@ -178,10 +155,13 @@ def read_factorize_data(filepath):
 
 
 model, dataset = load_model()
-manifold_list = create_manifold_list(model)
+
 print(manifold_list)
 sequential_loader = create_loader_sequential(model,
                                             dataset)
+                                            
+manifold_list = create_manifold_list(model)
+
 X, _ = create_X_y(model, sequential_loader)
 X = X.detach().numpy().astype(np.float64)
 labels, na_filter = read_factorize_data(args.batch_file)
