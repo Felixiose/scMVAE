@@ -25,11 +25,6 @@ def poincare_distance_c(x: Tensor, y: Tensor, c: Tensor, keepdim: bool = True, *
 
 
 def mob_add(x: Tensor, y: Tensor, K: Tensor) -> Tensor:
-    # prod = torch.sum(x * y, dim=-1, keepdim=True)
-    # normx2 = torch.sum(x * x, dim=-1, keepdim=True)
-    # normy2 = torch.sum(y * y, dim=-1, keepdim=True)
-    # denom = 1 - 2 * K * prod + K * K * normx2 * normy2
-    # return ((1 - 2 * K * prod - K * normy2) * x + (1 + K * normx2) * y) / denom.clamp(min=MIN_NORM)
     return pm.mobius_add(x, y, c=-K)
 
 #Definiton of the spherical projected distance
