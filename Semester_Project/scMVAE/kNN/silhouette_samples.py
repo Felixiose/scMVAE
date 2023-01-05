@@ -6,6 +6,7 @@ import pandas as pd
 import pickle
 from multiprocessing import Pool
 import gc
+from functools import partial
 
 from ...scMVAE.models import FeedForwardVAE
 import argparse
@@ -13,7 +14,7 @@ from ...scMVAE import utils
 from ...utils import str2bool
 from ...data.utils import create_dataset
 from ...scMVAE.components.component import *
-from scipy.spatial.distance import pdist, squareform
+from scipy.spatial.distance import pdist, squareform, cdist
 from sklearn.metrics import silhouette_score
 
 from ..kNN.distances import euclidean_distance, spherical_distance, spherical_projected_gyro_distance, lorentz_distance, poincare_distance
@@ -22,7 +23,7 @@ from ..kNN.distances import euclidean_distance, spherical_distance, spherical_pr
 parser = argparse.ArgumentParser(description="M-VAE runner.")
 parser.add_argument("--id", type=str, default="id", help="A custom run id to keep track of experiments")
 parser.add_argument("--device", type=str, default="cuda", help="Whether to use cuda or cpu.")
-parser.add_argument("--data", type=str, default="./data", help="Data directory.")
+#aparser.add_argument("--data", type=str, default="./data", help="Data directory.")
 parser.add_argument("--batch_size", type=int, default=100, help="Batch size.")
 parser.add_argument("--chkpt", type=str, default="", help="Model latent space description.")
 parser.add_argument("--learning_rate", type=float, default=1e-3, help="Learning rate.")
@@ -37,24 +38,24 @@ parser.add_argument("--dataset",
                     help="Which dataset to run on. Options: adipose, rgc, celegans")
 parser.add_argument("--h_dim", type=int, default=400, help="Hidden layer dimension.")
 parser.add_argument("--seed", type=int, default=None, help="Random seed.")
-parser.add_argument(
-    "--show_embeddings",
-    type=int,
-    default=0,
-    help="Show embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
-parser.add_argument(
-    "--export_embeddings",
-    type=int,
-    default=0,
-    help="Export embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
-parser.add_argument("--test_every",
-                    type=int,
-                    default=0,
-                    help="Test every N epochs during training. Non-positive values mean never.")
-parser.add_argument("--train_statistics",
-                    type=str2bool,
-                    default=False,
-                    help="Show Tensorboard statistics for training.")
+# parser.add_argument(
+    # "--show_embeddings",
+    # type=int,
+    # default=0,
+    # # help="Show embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
+# parser.add_argument(
+    # "--export_embeddings",
+    # type=int,
+    # # default=0,
+    # help="Export embeddings every N test runs. Non-positive values mean never. Only effective if test_every > 0.")
+# parser.add_argument("--test_every",
+                    # type=int,
+                    # default=0,
+                    # # help="Test every N epochs during training. Non-positive values mean never.")
+# parser.add_argument("--train_statistics",
+                    # type=str2bool,
+                    # default=False,
+                    # help="Show Tensorboard statistics for training.")
 parser.add_argument(
     "--scalar_parametrization",
     type=str2bool,
@@ -66,14 +67,16 @@ parser.add_argument("--fixed_curvature",
                     default=True,
                     help="Whether to fix curvatures to (-1, 0, 1).")
 parser.add_argument("--doubles", type=str2bool, default=True, help="Use float32 or float64. Default float32.")
-parser.add_argument("--beta_start", type=float, default=1.0, help="Beta-VAE beginning value.")
-parser.add_argument("--beta_end", type=float, default=1.0, help="Beta-VAE end value.")
-parser.add_argument("--beta_end_epoch", type=int, default=1, help="Beta-VAE end epoch (0 to epochs-1).")
-parser.add_argument("--likelihood_n",
-                    type=int,
-                    default=500,
-                    help="How many samples to use for LL estimation. Value 0 disables LL estimation.")
+# parser.add_argument("--beta_start", type=float, default=1.0, help="Beta-VAE beginning value.")
+# parser.add_argument("--beta_end", type=float, default=1.0, help="Beta-VAE end value.")
+# parser.add_argument("--beta_end_epoch", type=int, default=1, help="Beta-VAE end epoch (0 to epochs-1).")
+# parser.add_argument("--likelihood_n",
+                    # type=int,
+                    # default=500,
+                    # help="How many samples to use for LL estimation. Value 0 disables LL estimation.")
 parser.add_argument("--batch_file", type=str, default=None, help="Path to a file with labels or batch effects")
+parser.add_argument("--n", type=int, default=5000, help="Path to a file with labels or batch effects")
+parser.add_argument("--size", type=int, default=10, help="Path to a file with labels or batch effects")
 
 args = parser.parse_args()
 
@@ -93,8 +96,6 @@ if args.doubles:
 else:
     torch.set_default_dtype(torch.float32)
 
-print(args.model)
-print(args.fixed_curvature)
 COMPONENTS = utils.parse_components(args.model, args.fixed_curvature)
 
 
@@ -108,7 +109,7 @@ def load_model():
                         scalar_parametrization=args.scalar_parametrization)
 
     return model, dataset
-    
+
 
 def create_loader_sequential(model, dataset):
     
@@ -149,7 +150,7 @@ def create_manifold_list(model):
     for i, component in enumerate(model.components):
 
         manifold_type = type(component)
-        dim = component.dim
+        dim = component.true_dim
         curvature = float(component.manifold.curvature)
 
         if manifold_type == UniversalComponent:
@@ -165,17 +166,6 @@ def create_manifold_list(model):
 
     return manifold_list
 
-
-#FIXME: what about UniversalComponent?
-
-
-model, dataset = load_model()
-sequential_loader = create_loader_sequential(model, dataset)
-X_all, y_all = create_X_y(model, sequential_loader)
-manifold_list = create_manifold_list(model)
-X_all = X_all.detach().numpy().astype(np.float64)
-y_all = y_all.detach().numpy().astype(np.float64).ravel()
-
 def read_factorize_data(filepath):
         """
         read a file with a single column, factorize to numerical classes 
@@ -185,6 +175,25 @@ def read_factorize_data(filepath):
         na_filter = np.where(names.notnull().values)
         fct = pd.factorize(names[0])[0]+1
         return fct, na_filter
+
+
+model, dataset = load_model()
+manifold_list = create_manifold_list(model)
+print(manifold_list)
+sequential_loader = create_loader_sequential(model,
+                                            dataset)
+X, _ = create_X_y(model, sequential_loader)
+X = X.detach().numpy().astype(np.float64)
+labels, na_filter = read_factorize_data(args.batch_file)
+label_name = os.path.splitext(os.path.basename(args.batch_file))[0]
+
+if X.shape[0] != labels.shape[0]:
+    raise("X_all.shape[0] != y_all.shape[0]")
+
+
+if na_filter[0].shape[0] < X.shape[0] :
+    X = X[na_filter[0],]
+    labels = labels[na_filter[0],]
 
 
 def distance(a, b):
@@ -232,55 +241,87 @@ def distance(a, b):
 
     return math.sqrt(distance_sqd)
 
-
-def calculate_silhouette(chunk):
-    X, labels = chunk
-    #train
-    dist = squareform(pdist(X, metric=distance))
-     
-    res = silhouette_score(dist, metric = "precomputed", labels=labels)
-    return res
+print("Dist")
+print(distance(X[0],X[0]))
 
 
-na_filter=None
-batch_name = "celltype" 
+def make_matrix_indices(n):
+    mtx_indices = np.triu_indices(n)
+    mtx_i=mtx_indices[0] [ np.where(mtx_indices[0]!=mtx_indices[1]) ]
+    mtx_j=mtx_indices[1] [ np.where(mtx_indices[0]!=mtx_indices[1]) ]
+    return mtx_i, mtx_j
 
-if args.batch_file is not None:
-    y_all, na_filter = read_factorize_data(args.batch_file)
-    batch_name = os.path.splitext(os.path.basename(args.batch_file))[0]
-
-if X_all.shape[0] != y_all.shape[0]:
-    raise("X_all.shape[0] != y_all.shape[0]")
+def make_indices_chunks(n,chunk_size):
+        
+    mtx_i, mtx_j = make_matrix_indices (n)
     
-if na_filter is not None:
-    X_all = X_all[na_filter[0],]
-    y_all = y_all[na_filter[0],]
+    vect_dim = mtx_i.shape[0]
+    vect_indices = np.array(range(0,vect_dim))
+    n_chunks = int(np.floor(vect_dim/chunk_size))
+    vect_indices_chunks = np.array_split(vect_indices, n_chunks)
+    list_chunks= [((mtx_i[i], mtx_j[i], i)) for i in vect_indices_chunks ]
+    return list_chunks
+    
 
-n_repicates = 10
-size = 1000
+def compute_dist(chunk, X):
+    i_chunck, j_chunk, k_chunk = chunk
+    res = np.zeros(i_chunck.shape)
+    for i in np.unique(i_chunck):
+        ind_i=np.where(i_chunck==i)
+        ind_j=j_chunk[ind_i]
+        res[ind_i] = cdist(XA = X[i:i+1,:],
+                           XB = X[ind_j,],
+                           metric = distance)
+    return (res, k_chunk)
 
-indices = list(range(X_all.shape[0]))
-list_chunks = list()
 
-for i in range(n_repicates):
-    sample = np.random.choice(indices, size=size, replace=False)
-    list_chunks.append((X_all[sample],y_all[sample]))
+def compute_silhuette_samples (X, Y, chunk_size):
+    n=int(X.shape[0])
+    list_chunks = make_indices_chunks(n,chunk_size)
+    kwargs = {'X':X }
+    mapfunc = partial(compute_dist, **kwargs)
+    pool = Pool()
+    res_chunks = pool.map( 
+    mapfunc, [chunk for chunk in list_chunks] )
+    pool.close()
+    dist_vec = np.zeros(int((n*n-n)/2))
+    for dist, ind in res_chunks:
+        dist_vec [ind] = dist
+    score = silhouette_score (squareform(dist_vec), Y, metric="precomputed")
+    return score
+  
 
-del X_all
-del y_all
+# n_repicates = 10
+# size = 1000
 
+indices = list(range(X.shape[0]))
+
+list_samples = list()
+for i in range(args.n):
+    sample = np.random.choice(indices, size=args.size, replace=False)
+    list_samples.append((X[sample],labels[sample]))
+
+print(X[0:20,])
+
+
+
+del X
+del labels
 
 gc.collect()
 
 
-pool = Pool(10)
-res_silh = pool.map( 
-    calculate_silhouette, [chunk for chunk in list_chunks ] )
-pool.close()
-
+res_list=list()
+for i in list_samples:
+    print(i[1][:20])
+    s= compute_silhuette_samples (X=i[0], Y=i[1], chunk_size=100) 
+    res_list.append(s)
+    print(s)
     
 
-save_path_silh = os.path.dirname(args.chkpt) + "/" +args.id+"_"+batch_name+ "_silhouette_score.tsv"
+ 
+ 
+save_path_silh = os.path.dirname(args.chkpt) + "/" +args.id+"_"+label_name+ "_silhouette_score.tsv"
 
 
 print("Saving results as" +  save_path_silh )
@@ -288,4 +329,4 @@ print("Saving results as" +  save_path_silh )
 
 with open(save_path_silh, 'w') as tsv:
         tsv.writelines(        
-        [ f"{args.id}\t{args.dataset}\t{args.model}\t{args.fixed_curvature}\t{args.universal}\t{args.seed}\t{batch_name}\t{silh}\n" for silh in res_silh ])
+        [ f"{args.id}\t{args.dataset}\t{args.model}\t{args.fixed_curvature}\t{args.universal}\t{args.seed}\t{label_name}\t{silh}\n" for silh in res_list ])
