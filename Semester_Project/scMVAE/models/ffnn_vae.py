@@ -30,7 +30,7 @@ class FeedForwardVAE(ModelVAE):
         self.fc_d0 = nn.Linear(self.total_z_dim + self.batch_data_dim, h_dim)
         self.fc_logits = nn.Linear(h_dim, dataset.in_dim)
 
-        # Batch layer for normailzation
+        # Batch layer for normalization
         self.batch_norm_encoder = nn.BatchNorm1d(self.h_dim)
         self.batch_norm_decoder = nn.BatchNorm1d(self.h_dim)
 
