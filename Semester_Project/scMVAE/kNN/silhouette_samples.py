@@ -127,7 +127,7 @@ def create_manifold_list(model):
     for i, component in enumerate(model.components):
 
         manifold_type = type(component)
-        dim = component.dim
+        dim = component.true_dim
         curvature = float(component.manifold.curvature)
 
         if manifold_type == UniversalComponent:
@@ -156,11 +156,10 @@ def read_factorize_data(filepath):
 
 model, dataset = load_model()
 
-print(manifold_list)
+
 sequential_loader = create_loader_sequential(model,
                                             dataset)
-                                            
-manifold_list = create_manifold_list(model)
+         
 
 X, _ = create_X_y(model, sequential_loader)
 X = X.detach().numpy().astype(np.float64)
@@ -175,6 +174,9 @@ if na_filter[0].shape[0] < X.shape[0] :
     X = X[na_filter[0],]
     labels = labels[na_filter[0],]
 
+                                   
+manifold_list = create_manifold_list(model)
+print(manifold_list)
 
 def distance(a, b):
 
@@ -220,9 +222,6 @@ def distance(a, b):
         counter += dim
 
     return math.sqrt(distance_sqd)
-
-print("Dist")
-print(distance(X[0],X[0]))
 
 
 def make_matrix_indices(n):
@@ -271,8 +270,6 @@ def compute_silhuette_samples (X, Y, chunk_size):
     return score
   
 
-# n_repicates = 10
-# size = 1000
 
 indices = list(range(X.shape[0]))
 
@@ -280,9 +277,6 @@ list_samples = list()
 for i in range(args.n):
     sample = np.random.choice(indices, size=args.size, replace=False)
     list_samples.append((X[sample],labels[sample]))
-
-print(X[0:20,])
-
 
 
 del X
@@ -293,8 +287,7 @@ gc.collect()
 
 res_list=list()
 for i in list_samples:
-    print(i[1][:20])
-    s= compute_silhuette_samples (X=i[0], Y=i[1], chunk_size=100) 
+    s = compute_silhuette_samples (X=i[0], Y=i[1], chunk_size=100) 
     res_list.append(s)
     print(s)
     
@@ -304,7 +297,7 @@ for i in list_samples:
 save_path_silh = os.path.dirname(args.chkpt) + "/" +args.id+"_"+label_name+ "_silhouette_score.tsv"
 
 
-print("Saving results as" +  save_path_silh )
+print("Saving results as\n" +  save_path_silh )
 
 
 with open(save_path_silh, 'w') as tsv:
