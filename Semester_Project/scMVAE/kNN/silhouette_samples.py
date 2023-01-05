@@ -127,7 +127,7 @@ def create_manifold_list(model):
     for i, component in enumerate(model.components):
 
         manifold_type = type(component)
-        dim = component.true_dim
+        dim = component.dim
         curvature = float(component.manifold.curvature)
 
         if manifold_type == UniversalComponent:
