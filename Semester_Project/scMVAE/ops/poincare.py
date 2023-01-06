@@ -1,18 +1,3 @@
-# Copyright 2019 Ondrej Skopek.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
 from typing import Any, Tuple
 
 import geoopt.manifolds.poincare.math as pm
@@ -54,32 +39,9 @@ class PoincareBall(RadiusManifold):
 
     def logdet(self, mu: Tensor, std: Tensor, z: Tensor, data: Tuple[Tensor, ...]) -> Tensor:
         b_mu = mu
-        # b_std = std
+    
         if len(z.shape) > 2:
             b_mu = mu.unsqueeze(dim=0).repeat((z.shape[0], 1, 1))
-            # b_std = std.unsqueeze(dim=0).repeat((z.shape[0], 1, 1))
-
-        # TODO-LATER: Derive this for D just like PVAE did for P. Actually, theirs doesn't work...
-        # c = _c(self.radius)
-        # d = mu.shape[-1]
-        # dpc = poincare_distance_c(b_mu, z, c=c)
-        # assert torch.isfinite(dpc).all()
-        # r = dpc / self.radius
-        # log_r = torch.log(r)
-        # log_sin_term = logsinh(r)
-        # assert torch.isfinite(log_r).all()
-        # assert torch.isfinite(log_sin_term).all()
-        #
-        # n_logprob = data[-1]
-        # # the value below is the whole logprob, not logdet, from the PVAE paper.. we need to subtract
-        # # the original gaussian logprob from it
-        # log_prob = -d * ln_2pi - d / 2. * torch.log(b_std) - dpc**2 / (2 * b_std**2) \
-        #     + (d - 1) * (log_r - log_sin_term)
-        # log_prob = log_prob.sum(dim=-1)
-        #
-        # logdet_partial = -log_prob + n_logprob
-        # assert torch.isfinite(logdet_partial).all()
-        # return logdet_partial
 
         z_sphere = poincare_to_lorentz(z, self.radius)
         mu_sphere = poincare_to_lorentz(b_mu, self.radius)
@@ -94,8 +56,6 @@ def poincare_distance(x: Tensor, y: Tensor, radius: Tensor, **kwargs: Any) -> Te
 
 
 def poincare_distance_c(x: Tensor, y: Tensor, c: Tensor, keepdim: bool = True, **kwargs: Any) -> Tensor:
-    # res = pm.dist(x, y, c=c, keepdim=keepdim, **kwargs)
-
     sqrt_c = sqrt(c)
     mob = pm.mobius_add(-x, y, c=c, dim=-1).norm(dim=-1, p=2, keepdim=keepdim)
     arg = sqrt_c * mob
@@ -153,7 +113,6 @@ def sample_projection_mu0(x: Tensor, at_point: Tensor, radius: Tensor) -> Tuple[
     c = _c(radius)
     v_ = x / pm.lambda_x(at_point, c=c, dim=-1, keepdim=True)  # Corresponds to PT divided by 2.
     x_proj = exp_map(v_, at_point=at_point, radius=radius)
-    # x_proj2 = pm.project(x_proj, c=c)
     return x_proj, (v_, x)
 
 

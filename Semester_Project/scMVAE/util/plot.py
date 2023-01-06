@@ -9,7 +9,6 @@ def plot_trace(x, y, y_label=None, x_label="Iteration"):
     if num_plot == 1:
         ax = [ax]
 
-    # plt.rc('axes', prop_cycle=(cycler('color', ['r', 'g', 'b', 'y'])))
     plt.tight_layout()
     plt.subplots_adjust(wspace=0.1, hspace=0.08, left=0.1)
 
