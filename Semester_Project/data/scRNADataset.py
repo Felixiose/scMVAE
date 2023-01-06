@@ -1,24 +1,9 @@
-# Copyright 2019 Ondrej Skopek.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
 from typing import Tuple, Optional
 import pandas as pd
 import numpy as np
 from scipy.io import mmread
 import torch
-from torch.utils.data import DataLoader, SubsetRandomSampler, SequentialSampler
+from torch.utils.data import DataLoader, SubsetRandomSampler
 from Semester_Project.data.vae_dataset import VaeDataset
 from torch.distributions import NegativeBinomial
 
@@ -38,12 +23,14 @@ class scRNADataset(VaeDataset):
     def __init__(self, batch_size: int, data_folder: str, data_file: str,
                  label_file: str, batch_files: Optional[list] = None,
                  doubles=False) -> None:
+        
         # input file paths
         self.data_file = data_file
         self.batch_files = batch_files
         self.label_file = label_file
         self.data_folder = data_folder
         self.doubles = doubles
+        
         # read batch effect, labels, data
         print("Reading data from " + self.data_file)
         if self.batch_files is not None and len(self.batch_files) > 0:
@@ -62,6 +49,7 @@ class scRNADataset(VaeDataset):
         self.dataset_len = self.__len__()
         self._in_dim = self.dataset.tensors[0].shape[1]
         self._shuffle_split_indx()
+       
         # remove data, labels, batch_data_pd
         self.data = None
         self.labels = None
@@ -135,11 +123,13 @@ class scRNADataset(VaeDataset):
         """
         Read gene expression data (features), normalize by max value, append batch effect features
         """
-        data = self.read_mtx(self.data_file)                # OPTION 1: No normalization
+        data = self.read_mtx(self.data_file)
         data = pd.DataFrame(data)
+        
         # add constant dummy batch effect if no batch effect given
         if self.batch_data_pd is None:
             self.batch_data_pd = self.create_dummy_batch_eff(n=data.shape[0])
+        
         data = pd.DataFrame(pd.concat([data, self.batch_data_pd], axis=1))
         res = self.df_to_tensor(data)
         return res
@@ -168,7 +158,6 @@ class scRNADataset(VaeDataset):
     def _shuffle_split_indx(self):
         indices = list(range(self.__len__()))
         split = int(np.floor(0.5 * self.__len__()))
-        # np.random.seed(random_seed)
         np.random.shuffle(indices)
         self.train_sampler = SubsetRandomSampler(indices[:split])
         self.test_sampler = SubsetRandomSampler(indices[split:])
@@ -194,22 +183,16 @@ class scRNADataset(VaeDataset):
         seq_loader = DataLoader(
             dataset=self.dataset,
             batch_size=batch_size,
-            #num_workers=8,
-            #pin_memory=True,
+            num_workers=8,
+            pin_memory=True,
             shuffle=False,
         )
         return seq_loader
 
     def reconstruction_loss(self, x_mb_: torch.Tensor, x_mb: torch.Tensor) -> torch.Tensor:
-
-        # OPTION 1 : No normalization
-
         x_mb_nonnegative = torch.add(torch.nn.functional.relu(x_mb_), 0.00001)
-
         log_prob = -NegativeBinomial(x_mb_nonnegative, 0.5 * torch.ones_like(x_mb_)).log_prob(x_mb)
-
         scale_penalty = 1
         error = torch.sub(x_mb_, x_mb)
         penatly_term = torch.sqrt(scale_penalty * (error * error))
-
         return torch.add(log_prob, penatly_term)
