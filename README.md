@@ -48,6 +48,7 @@ Our structure is closely related to the one used in the
     * `utils/` - Contains different data handling utils.
   * `visualization/` - Utilities for visualization of latent spaces or training statistics.
   * `utils.py/` - Contains parsing utility function.
+  * `report_figures/` - Contains Jupyter notebooks, data and code to reproduce figures presented in the project report (Jupyter and R are not part of our conda environment! You need to use a different environment to execute notebooks ).
 * `data/` - Data folder. Contains a script necessary for downloading the datasets we used. 
 * **`scripts/`** - Contains scripts to run experiments presented in paper.
 * **`Makefile`** - Defines "aliases" for various tasks.
