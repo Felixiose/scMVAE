@@ -59,7 +59,7 @@ In bold are files that were changed or created by us. The rest of the script is 
 
 ## Usage
 
-To get a feel for how the model works, try out the toy examples by running:
+To get a feel for how the model works, try out the toy example by running:
 
 ```bash
 conda activate pt
