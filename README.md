@@ -35,7 +35,7 @@ Our structure is closely related to the one used in the
   * **`scMVAE/`** -  Contains all files needed for the model definition.
     * `components/`- Contains the components needed for training.
     * `distributions/` - Contains the probability distributions for the different spaces.
-    *  **`kNN/`** - Contains the code for the kNN clustering and silhouette scores.
+    * **`kNN/`** - Contains the code for the kNN clustering and silhouette scores.
       * **`kNN.py/`** - Runs the kNN algorithm on the whole dataset.
       * **`kNN_samples.py/`** - Runs the kNN algorithm on subsamples of the whole dataset (faster).
       * **`silhouette_samples.py/`** - Computes the silhouette scores with regards to the batch effects.
