@@ -36,6 +36,9 @@ Our structure is closely related to the one used in the
     * `components/`- Contains the components needed for training.
     * `distributions/` - Contains the probability distributions for the different spaces.
     *  **`kNN/`** - Contains the code for the kNN clustering and silhouette scores.
+      * **`kNN.py/`** - Runs the kNN algorithm on the whole dataset.
+      * **`kNN_samples.py/`** - Runs the kNN algorithm on subsamples of the whole dataset (faster).
+      * **`silhouette_samples.py/`** - Computes the silhouette scores with regards to the batch effects.
     * **`model/`** - 
       * **`ffn_vae.py`** - Simple feedforward network with one recurrent branch passing the batch effect.
       * `train.py` - Class for training the model.
@@ -47,7 +50,7 @@ Our structure is closely related to the one used in the
   * `utils.py/` - Contains parsing utility function.
 * `data/` - Data folder. Contains a script necessary for downloading the datasets we used. 
 * **`scripts/`** - Contains scripts to run experiments presented in paper.
-**`Makefile`** - Defines "aliases" for various tasks.
+* **`Makefile`** - Defines "aliases" for various tasks.
 * **`README.md`** - This manual.
 * **`environment.yml`** - Required Python packages.
 
@@ -70,7 +73,7 @@ For an evaluation run, see `Semester_Project/examples/eval.py`.
 
 ## Replication of experiments
 
-To replicate our experiments step by step, please have a look at the scripts folder.
+To replicate our experiments step by step, please have a look at the `scripts/` folder.
 
 
 
