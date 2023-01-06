@@ -1,7 +1,7 @@
 # This script serves as a template for creating all kNN commands on the Euler cluster.
 # Feel free to modify it to the needs of your local machine/cluster.
 
-for exp in `ls -d /cluster/scratch/cdoumont/scMVAE/chkpt/*celegans*`; do
+for exp in `ls -d /cluster/scratch/cdoumont/scMVAE/chkpt/*rgc*`; do
 	count_file=`ls -1 "$exp"/*.chkpt 2>/dev/null | wc -l`
 	count_file_tsv=`find $exp -maxdepth 1 -name "*.tsv"|wc -l`
 	if test $count_file_tsv -ne 0; then
@@ -22,4 +22,4 @@ for exp in `ls -d /cluster/scratch/cdoumont/scMVAE/chkpt/*celegans*`; do
 	else
 		echo -e \# folder $exp has $count_file chkpt-files. Must be one. skipping
 	fi
-	done >> knn_commands_celegans_still_not_analysed.txt
+	done >> knn_rgc_commands.txt
