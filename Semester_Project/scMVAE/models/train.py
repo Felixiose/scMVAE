@@ -87,10 +87,13 @@ class Trainer:
         elbos = np.asarray([_get_elbo(i) for i in lookahead_interval])
         max_elbo_i = np.argmax(elbos)
         max_elbo = elbos[max_elbo_i]
+        #Stop if elbo did not improve in last Lookahead epochs
         if max_elbo < _get_elbo(cur_stop_step):
             return cur_stop_step
+        #Stop if attained last epoch
         elif epoch == max_epoch:
             return cur_stop_step + 1 + max_elbo_i
+        #Don't stop
         else:
             return None
 
@@ -116,7 +119,7 @@ class Trainer:
         train_results = dict()
         test_results = dict()
 
-        # Warmup
+        # Warmup: No early stopping possible
         for _ in range(warmup):
             beta = self.get_beta(betas)
             train_results[self.epoch] = self._train_epoch(optimizer, train_data, beta=beta)
