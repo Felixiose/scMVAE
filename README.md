@@ -63,10 +63,7 @@ To get a feel for how the model works, try out the toy examples by running:
 
 ```bash
 conda activate pt
-
 make run
-
-make eval
 ```
 Take a look at `Semester_Project/examples/run.py` for a list of command line arguments.
 For an evaluation run, see `Semester_Project/examples/eval.py`.

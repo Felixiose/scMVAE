@@ -1,4 +1,4 @@
-.PHONY = conda download_data run eval project
+.PHONY = conda download_data run
 
 
 
@@ -11,8 +11,5 @@ download_data:
 	python -m data.download_data
 run: 
 	python -m Semester_Project.examples.run
-
-eval: 
-	python -m Semester_Project.examples.eval
 
 
