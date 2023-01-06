@@ -10,7 +10,7 @@ Félix Vittori
 
 
 > This repository contains the implementation of our Semester Project for the class Deep Learning 263-3210-00L at ETH Zurich.
-> To run this project follow the steps layed out below
+> To run this project follow the steps layed out below.
 
 
 ## Installation & Configuration
@@ -29,27 +29,25 @@ Our structure is closely related to the one used in the
 [MVAE-Github](https://github.com/oskopek/mvae) as it is the one we built our project upon. 
 
 
-* **`Semster_Project/`** - Source folder 
+* **`Semester_Project/`** - Source folder 
   * **`data/`** - Data loading, preprocessing, batching, and pre-trained embeddings.
   * **`examples/`** - Contains the main executable file. Reads flags and runs the corresponding training and/or evaluation. 
-  * **`scMVAE/`** - folder containing files for the model definition
-    * `components/`- contains the components for training
-    * `distributions/` - contains different spaces
-    *  **`kNN/`** - contains the code for clustering and evaluation
-      * **`distances.py`** - contains the definitions of the different distances
-      * **`kNN.py`** - main loop for clustering and evaluation
+  * **`scMVAE/`** -  Contains all files needed for the model definition.
+    * `components/`- Contains the components needed for training.
+    * `distributions/` - Contains the probability distributions for the different spaces.
+    *  **`kNN/`** - Contains the code for the kNN clustering and silhouette scores.
     * **`model/`** - 
-      * **`ffn_vae.py`** - simple feedforward network with one recurrent branch passing the batch effect
-      * `train.py` - class for training the model
-      * `vae.py` - class for we inherit from in ffn_vae.py
-    * `ops/` - operations definitions from mvae
-    * `sampling/`- sampling methods from mvae
-    * `utils/` - different data handling utils
+      * **`ffn_vae.py`** - Simple feedforward network with one recurrent branch passing the batch effect.
+      * `train.py` - Class for training the model.
+      * `vae.py` - Class inherited by ffn_vae.py/
+    * `ops/` - Contains the operations definitions from mvae.
+    * `sampling/`- Contains the sampling methods from mvae.
+    * `utils/` - Contains different data handling utils.
   * `visualization/` - Utilities for visualization of latent spaces or training statistics.
-  * `utils.py/` - Containt parsing utility function
+  * `utils.py/` - Contains parsing utility function.
 * `data/` - Data folder. Contains a script necessary for downloading the datasets we used. 
-* `scripts/` - Contains scripts to run experiments and plot the results. _From MVAE_
-* **`Makefile`** - Defines "aliases" for various tasks.
+* **`scripts/`** - Contains scripts to run experiments presented in paper.
+**`Makefile`** - Defines "aliases" for various tasks.
 * **`README.md`** - This manual.
 * **`environment.yml`** - Required Python packages.
 
@@ -58,7 +56,7 @@ In bold are files that were changed or created by us. The rest of the script is 
 
 ## Usage
 
-To run training and inference, activate the created conda environment and run the examples:
+To get a feel for how the model works, try out the toy examples by running:
 
 ```bash
 conda activate pt
@@ -67,12 +65,12 @@ make run
 
 make eval
 ```
-
 Take a look at `Semester_Project/examples/run.py` for a list of command line arguments.
-
 For an evaluation run, see `Semester_Project/examples/eval.py`.
 
+## Replication of experiments
 
+To replicate our experiments step by step, please have a look at the scripts folder.
 
 
 
