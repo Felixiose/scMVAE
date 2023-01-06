@@ -129,7 +129,7 @@ def main() -> None:
             component._curvature.data += signs[i] * eps
             component._curvature.requires_grad = False
 
-        # ... and continue without learning curvature for an epoch:
+        # ... and continue without learning curvature for a few epochs:
         trainer.train_epochs(optimizer=optimizer,
                              train_data=train_loader,
                              eval_data=test_loader,
@@ -162,5 +162,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # with torch.autograd.set_detect_anomaly(True):
     main()

@@ -5,5 +5,5 @@
  	"./Semester_Project/data/uc_epi/uc_epi_batch_patient.tsv",
  	"./Semester_Project/data/uc_epi/uc_epi_batch_location.tsv",
  	"./Semester_Project/data/uc_epi/uc_epi_batch_health.tsv"
- 	],
+ 	]
 }

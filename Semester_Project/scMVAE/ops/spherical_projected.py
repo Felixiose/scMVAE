@@ -1,18 +1,3 @@
-# Copyright 2019 Ondrej Skopek.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
 from typing import Any, Tuple
 
 import torch
@@ -54,30 +39,9 @@ class StereographicallyProjectedSphere(RadiusManifold):
 
     def logdet(self, mu: Tensor, std: Tensor, z: Tensor, data: Tuple[Tensor, ...]) -> Tensor:
         b_mu = mu
-        # b_std = std
+        
         if len(z.shape) > 2:
             b_mu = mu.unsqueeze(dim=0).repeat((z.shape[0], 1, 1))
-            # b_std = std.unsqueeze(dim=0).repeat((z.shape[0], 1, 1))
-
-        # TODO-LATER: Derive this for D just like PVAE did for P. Actually, theirs doesn't work...
-        # c = _c(self.radius)
-        # d = mu.shape[-1]
-        # dpc = spherical_projected_gyro_distance(b_mu, z, K=c)
-        # assert torch.isfinite(dpc).all()
-        # r = dpc / self.radius
-        # log_r = torch.log(r)
-        # log_sin_term = torch.log(torch.abs(torch.sin(r)))
-        # assert torch.isfinite(log_r).all()
-        # assert torch.isfinite(log_sin_term).all()
-        #
-        # n_logprob = data[-1]
-        # # the value below is the whole logprob, not logdet, from the PVAE paper.. we need to subtract
-        # # the original gaussian logprob from it
-        # log_prob = -d * ln_2pi - d / 2. * torch.log(b_std) - dpc ** 2 / (2 * b_std ** 2) + (d - 1) * (
-        #         log_r - log_sin_term)
-        # log_prob = log_prob.sum(dim=-1)
-        #
-        # logdet_partial = -log_prob + n_logprob
 
         z_sphere = projected_to_spherical(z, self.radius)
         mu_sphere = projected_to_spherical(b_mu, self.radius)
@@ -105,11 +69,6 @@ def spherical_projected_gyro_distance(x: Tensor, y: Tensor, K: Tensor, **kwargs:
 
 
 def mob_add(x: Tensor, y: Tensor, K: Tensor) -> Tensor:
-    # prod = torch.sum(x * y, dim=-1, keepdim=True)
-    # normx2 = torch.sum(x * x, dim=-1, keepdim=True)
-    # normy2 = torch.sum(y * y, dim=-1, keepdim=True)
-    # denom = 1 - 2 * K * prod + K * K * normx2 * normy2
-    # return ((1 - 2 * K * prod - K * normy2) * x + (1 + K * normx2) * y) / denom.clamp(min=MIN_NORM)
     return pm.mobius_add(x, y, c=-K)
 
 
@@ -130,10 +89,6 @@ def lambda_x(x: Tensor, radius: Tensor, dim: int = -1, keepdim: bool = True) -> 
 
 
 def gyration(u: Tensor, v: Tensor, w: Tensor, c: Tensor) -> Tensor:
-    # mupv = -mob_add(u, v, c)
-    # vpw = mob_add(v, w, c)
-    # upvpw = mob_add(u, vpw, c)
-    # return mob_add(mupv, upvpw, c)
     return pm.gyration(u, v, w, c=-c)
 
 

@@ -3,5 +3,5 @@
  "label_file": "./Semester_Project/data/celegans/celegan_celltype.tsv",
  "batch_files": [
  	"./Semester_Project/data/celegans/celegan_batch.tsv"
- 	],
+ 	]
 }

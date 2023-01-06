@@ -1,7 +1,7 @@
 {
  "data_file": "./Semester_Project/data/adipose/adipose.mtx",
  "label_file": "./Semester_Project/data/adipose/adipose_celltype.tsv",
- "batch_files": [],
+ "batch_files": []
 }
 
  

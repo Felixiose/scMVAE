@@ -1,18 +1,3 @@
-# Copyright 2019 Ondrej Skopek.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-# ==============================================================================
-
 from collections import defaultdict
 import os
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -87,10 +72,13 @@ class Trainer:
         elbos = np.asarray([_get_elbo(i) for i in lookahead_interval])
         max_elbo_i = np.argmax(elbos)
         max_elbo = elbos[max_elbo_i]
+        #Stop if elbo did not improve in last Lookahead epochs
         if max_elbo < _get_elbo(cur_stop_step):
             return cur_stop_step
+        #Stop if attained last epoch
         elif epoch == max_epoch:
             return cur_stop_step + 1 + max_elbo_i
+        #Don't stop
         else:
             return None
 
@@ -116,7 +104,7 @@ class Trainer:
         train_results = dict()
         test_results = dict()
 
-        # Warmup
+        # Warmup: No early stopping possible
         for _ in range(warmup):
             beta = self.get_beta(betas)
             train_results[self.epoch] = self._train_epoch(optimizer, train_data, beta=beta)
@@ -288,7 +276,7 @@ class Trainer:
         export_embeddings = self.stats.export_embeddings > 0 \
             and self.stats.test_epochs % self.stats.export_embeddings == 0
         if export_embeddings:
-            self._export_representations(test_data)  # TODO: merge this method with _export_representations.
+            self._export_representations(test_data)
 
         self.model.train()
         self.stats.test_epochs += 1

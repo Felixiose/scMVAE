@@ -57,7 +57,7 @@ def main() -> None:
     print("#####", flush=True)
 
     if args.dataset in ["adipose", "rgc", "celegans", "uc_epi"]:
-        model_cls = FeedForwardVAE  # type: ignore
+        model_cls = FeedForwardVAE
     else:
         raise ValueError(f"Unknown dataset '{args.dataset}'.")
     model = model_cls(h_dim=args.h_dim,
@@ -89,5 +89,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    # with torch.autograd.set_detect_anomaly(True):
     main()
