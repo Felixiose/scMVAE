@@ -9,7 +9,7 @@ and
 Félix Vittori
 
 
-> This repository contains the implementation of our Semester Project for the class Deep Learning 263-3210-00L at ETH Zurich.
+> This repository contains the implementation of our Semester Project for the class Deep Learning 263-3210-00L at ETH Zurich. -> [Paper](https://github.com/Felixiose/scMVAE/blob/master/scMVAE_paper.pdf)
 > To run this project follow the steps layed out below.
 
 
